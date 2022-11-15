@@ -8,10 +8,13 @@
 #   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
 
-from app import app, db, cli
+from app import create_app, db, cli
 from app.models import User, Post
 
-#shell processor necessary for flask shell command.
+app = create_app()
+cli.register(app)
+
+#shell processor necessary for flask commands
 @app.shell_context_processor
 def make_shell_context():
     return {'db': db, 'User': User, 'Post': Post}
