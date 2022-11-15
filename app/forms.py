@@ -57,3 +57,9 @@ class EditProfileForm(FlaskForm):
 #Empty form object with only submit button, useful for following
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
+
+#Form for submitting new blog posts, which will be added to db
+class PostForm(FlaskForm):
+    post = TextAreaField('Say something', validators=[
+        DataRequired(), Length(min=1, max=140)])
+    submit = SubmitField('Submit')
