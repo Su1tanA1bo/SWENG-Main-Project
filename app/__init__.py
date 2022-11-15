@@ -23,6 +23,7 @@ from flask_moment import Moment
 from flask_babel import Babel
 from flask_babel import lazy_gettext as _l
 
+
 #necessary code for app initialisation
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -36,6 +37,8 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 babel = Babel(app)
 
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
 from app import routes, models
 
 if not app.debug:
