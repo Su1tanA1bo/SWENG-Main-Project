@@ -8,7 +8,7 @@ def translate():
     """Translation and localization commands."""
     pass
 
-
+#Adds a flask command to add a new language LANG "flask translate init LANG"
 @translate.command()
 @click.argument('lang')
 def init(lang):
@@ -20,7 +20,7 @@ def init(lang):
         raise RuntimeError('init command failed')
     os.remove('messages.pot')
 
-
+#Adds a flask command to update all translations "flask translate update"
 @translate.command()
 def update():
     """Update all languages."""
@@ -30,7 +30,7 @@ def update():
         raise RuntimeError('update command failed')
     os.remove('messages.pot')
 
-
+#Adds a flask command to compile all translations "flask translate compile"
 @translate.command()
 def compile():
     """Compile all languages."""
