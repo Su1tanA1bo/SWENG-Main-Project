@@ -10,9 +10,15 @@
 ##*************************************************************************
 
 import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+from dotenv import load_dotenv
 
-#Config object containing all the configuration information
+#load environment variables from a .env file
+#.env file is currently included in github, but SHOULD NOT BE IN FINAL RELEASE
+#TODO: Delete this comment in final release, and remove .env file from github
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+
+#Config object containing all configuration information
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
@@ -24,5 +30,6 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['your-email@example.com']
-    POSTS_PER_PAGE = 8
-    LANGUAGES = ['en']
+    LANGUAGES = ['en', 'es']
+    MS_TRANSLATOR_KEY = os.environ.get('MS_TRANSLATOR_KEY')
+    POSTS_PER_PAGE = 25
