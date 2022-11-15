@@ -39,15 +39,15 @@ def index():
         db.session.add(post)
         db.session.commit()
         flash(_('Your post is now live!'))
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     #displaying posts of followed users
     page = request.args.get('page', 1, type=int)
     posts = current_user.followed_posts().paginate(
         page=page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
     #giving new pages to view next posts in sequence
-    next_url = url_for('index', page=posts.next_num) \
+    next_url = url_for('main.index', page=posts.next_num) \
         if posts.has_next else None
-    prev_url = url_for('index', page=posts.prev_num) \
+    prev_url = url_for('main.index', page=posts.prev_num) \
         if posts.has_prev else None
     return render_template('index.html', title='Home', form=form,
                            posts=posts.items, next_url=next_url,
@@ -61,9 +61,9 @@ def explore():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page=page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
-    next_url = url_for('explore', page=posts.next_num) \
+    next_url = url_for('main.explore', page=posts.next_num) \
         if posts.has_next else None
-    prev_url = url_for('explore', page=posts.prev_num) \
+    prev_url = url_for('main.explore', page=posts.prev_num) \
         if posts.has_prev else None
     return render_template("index.html", title='Explore', posts=posts.items,
                           next_url=next_url, prev_url=prev_url)
