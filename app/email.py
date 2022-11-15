@@ -8,12 +8,10 @@
 #   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
 
-from flask_mail import Message
-from app import mail, app
-from flask import render_template
 from threading import Thread
-from flask_babel import _
 from flask import current_app
+from flask_mail import Message
+from app import mail
 
 #method for sending emails asynchronously, with threads
 def send_async_email(app, msg):
