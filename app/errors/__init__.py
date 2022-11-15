@@ -1,5 +1,5 @@
 ##*************************************************************************
-#  Main file for webapp. Imports everything from ./app directory
+#   init file for the error blueprints within the project
 #
 #   @author	 Indigo Bosworth
 #   @Creation Date: 15/11/2022
@@ -8,13 +8,8 @@
 #   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
 
-from app import create_app, db, cli
-from app.models import User, Post
+from flask import Blueprint
 
-app = create_app()
-cli.register(app)
+bp = Blueprint('errors', __name__)
 
-#shell processor necessary for flask commands
-@app.shell_context_processor
-def make_shell_context():
-    return {'db': db, 'User': User, 'Post': Post}
+from app.errors import handlers
