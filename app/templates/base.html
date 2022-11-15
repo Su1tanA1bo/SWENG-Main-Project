@@ -2,13 +2,17 @@
 <html>
     <head>
       {% if title %}
-      <title>{{ title }} - Microblog</title>
+      <title>{{ title }} - Main Project 3</title>
       {% else %}
-      <title>Welcome to Microblog</title>
+      <title>Welcome to Main Project 3</title>
       {% endif %}
     </head>
     <body>
-        <div>Microblog: <a href="/index">Home</a></div>
+        <div>
+            Main Project:
+            <a href="/index">Home</a>
+            <a href="/login">Login</a>
+        </div>
         <hr>
         {% block content %}{% endblock %}
     </body>
