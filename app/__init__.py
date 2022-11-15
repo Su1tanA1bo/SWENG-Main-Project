@@ -1,3 +1,12 @@
+##*************************************************************************
+#   initialiser file for the webapp
+#
+#   @author	 Indigo Bosworth
+#   @Creation Date: 15/11/2022
+#         
+#
+##*************************************************************************
+
 from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy

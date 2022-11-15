@@ -1,3 +1,12 @@
+##*************************************************************************
+#   Files containing all the forms used by webpages within the app
+#
+#   @author	 Indigo Bosworth
+#   @Creation Date: 15/11/2022
+#         
+#
+##*************************************************************************
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length

@@ -1,3 +1,13 @@
+##*************************************************************************
+#   File handling all routing of the webpages. 
+#   Contains functions taking url as input, and then calls html files with passed info
+#
+#   @author	 Indigo Bosworth
+#   @Creation Date: 15/11/2022
+#         
+#
+##*************************************************************************
+
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm

@@ -1,3 +1,12 @@
+##*************************************************************************
+#   models file for all objects containied in database of flask app
+#
+#   @author	 Indigo Bosworth
+#   @Creation Date: 15/11/2022
+#         
+#
+##*************************************************************************
+
 from datetime import datetime
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash

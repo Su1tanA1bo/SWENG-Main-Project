@@ -1,3 +1,12 @@
+##*************************************************************************
+#   file for handling webpage errors and sending to error pages
+#
+#   @author	 Indigo Bosworth
+#   @Creation Date: 15/11/2022
+#         
+#
+##*************************************************************************
+
 from flask import render_template
 from app import app, db
 
