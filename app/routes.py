@@ -17,8 +17,8 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 
 #function for handling webapp home page. Displays all posts from followed users.
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
     form = PostForm()
@@ -28,9 +28,11 @@ def index():
         db.session.commit()
         flash('Your post is now live!')
         return redirect(url_for('index'))
-    posts = current_user.followed_posts().all()
-    return render_template("index.html", title='Home Page', form=form,
-                           posts=posts)
+    page = request.args.get('page', 1, type=int)
+    posts = current_user.followed_posts().paginate(
+        page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+    return render_template('index.html', title='Home', form=form,
+                           posts=posts.items)
 
 #function for handling user log in page
 @app.route('/login', methods=['GET', 'POST'])
@@ -152,5 +154,7 @@ def unfollow(username):
 @app.route('/explore')
 @login_required
 def explore():
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Explore', posts=posts)
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page=page, per_page=app.config['POSTS_PER_PAGE'], error_out=False)
+    return render_template("index.html", title='Explore', posts=posts.items)
