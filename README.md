@@ -44,3 +44,21 @@ During the course of the project, new items or relations between items will need
 * Undo the latest database migration (useful during development if database migration creates errors)
 	`flask db downgrade`
 
+## Localisation and Internationalisation
+
+### Marking text for translation within code
+Part of the functioality of the webapp is that it can include translations of text. To mark text that is within the code, and needs translation, put the text in a "_()". An example of a code block from "app/main/models.py" showing this is below.
+``` python
+from flask_babel import _
+...
+submit = SubmitField(_l('Submit'))
+```
+
+### Translation commands
+The following commands are defined within "main/cli.py" and are useable to provide translation functionality and the ability to quickly and easily update the .po and .pot files within the project.
+* Add a new language to the project
+	`flask translate init [LANG]`
+* Update all language repositiries
+	`flask translate update`
+* Compile all language repositories
+	`flask translate compile`
