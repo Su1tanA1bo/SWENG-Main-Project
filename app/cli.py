@@ -1,3 +1,12 @@
+##*************************************************************************
+#   file adding additional flask commands for ease of translation
+#
+#   @author	 Indigo Bosworth
+#   @Creation Date: 15/11/2022
+#         
+#
+##*************************************************************************
+
 import os
 import click
 from app import app
