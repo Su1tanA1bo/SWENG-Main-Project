@@ -59,11 +59,12 @@ class User(UserMixin, db.Model):
             followers.c.followed_id == user.id).count() > 0
     #Complicated query that allows a user to see all their followed posts
     def followed_posts(self):
-        return Post.query.join(
+        followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
-                followers.c.follower_id == self.id).order_by(
-                    Post.timestamp.desc())
-
+                followers.c.follower_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
+        
 #Class for posts in database.
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
