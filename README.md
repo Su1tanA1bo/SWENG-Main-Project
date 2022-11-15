@@ -28,6 +28,8 @@ If you are not using the library flask-dotenv, and/or do not have a the file ".f
 	`set FLASK_APP=webapp.py`
 * Tell Flask how to import the webapp (Not Windows)
 	`export FLASK_APP=webapp.py`
+To start the app in debug mode, which uses the inbuilt flask debugger, run the following command (using "set" instead of "export" if on a windows machine.)
+    `export FLASK_ENV=development`
 
 ### Running Flask as a shell locally
 If you want to run flask as a shell locally, with all imports handled, run the following command: `flask shell`
@@ -62,3 +64,12 @@ The following commands are defined within "main/cli.py" and are useable to provi
 	`flask translate update`
 * Compile all language repositories
 	`flask translate compile`
+
+## Emails
+The app is currently configured to send emails using local environment variables defined within "config.py". However, these environemnt variables are not defined anywhere. For testing, you should set them locally on your machine. An email will only be sent if the app is not currently in debug mode, and if these variables are set. To set each of them for a **Gmail Email Address**, use the following commands:
+*	`export MAIL_SERVER=smtp.googlemail.com`
+*	`export MAIL_PORT=587`
+*	`export MAIL_USE_TLS=1`
+*	`export MAIL_USERNAME=<your-gmail-username>`
+*	`export MAIL_PASSWORD=<your-gmail-password>`
+These commands will not work if you are not using Gmail. If you are using a windows machine, replace the word "export" above with "set" for setting environment variables.
