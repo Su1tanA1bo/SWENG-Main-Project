@@ -3,6 +3,14 @@
 Trello Board 
 https://trello.com/invite/b/JzYBrrIW/ATTI9d8d7bbfa462b537c084dbc08148842b2CD9369B/sweng3main
 
+## Explanation of the project structure
+Each indivual python file defines what it does at the start of the file. Everyone that edits said file should change the author section to include themselves as the project goes on.
+The majority of the webapp is housed within the "/app" directory. Within this directory, the three subdirectories "/auth", "/errors", and "/main" contain flask blueprints for the main features of the app. Auth handles the authentication of users, errors handles all error handling and exceptions within the site, and main contains the main functionality of the app.
+The file "models.py" handles the database layout and structure of the webapp. When this is migrated and turned into a database, that database is __currently__ housed locally in the file "app.db".
+The folder "/app/templates" contains all html files needed for the project. These html files use bootstrap as a template, as can be seen in "base.html". They are also organised into folders based on flask blueprints, except for all html files used by the main blueprint.
+"babel.cfg" is a configuration file for flask-babel, and allows for the translation of all text within the webapp, if that is desired.
+"UserTest.py" needs to be moved inside of the "/Testing" folder in the future, but as of now encounters errors when that is attempted, and so is currently at project root.
+
 ## Running the app locally
 ### (Recommended) Run a virtual environment
 It is recommended that you do all development with python inside of a virtual environment. 
@@ -73,3 +81,6 @@ The app is currently configured to send emails using local environment variables
 *	`export MAIL_USERNAME=<your-gmail-username>`
 *	`export MAIL_PASSWORD=<your-gmail-password>`
 These commands will not work if you are not using Gmail. If you are using a windows machine, replace the word "export" above with "set" for setting environment variables.
+
+## Resources used to create this program
+A large amount of the base code of this webapp came from this [online web tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world). However, while this code was used to build the base of the app, as the project progressed it overall was altered into something completely different than what said tutorial initially covers.
