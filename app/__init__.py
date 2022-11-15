@@ -4,10 +4,12 @@
 #   @author	 Indigo Bosworth
 #   @Creation Date: 15/11/2022
 #         
-#
+#   @Primary credit for code basis goes to:
+#   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
 
 from flask import Flask, request
+from app.errors import handlers
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -34,7 +36,7 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 babel = Babel(app)
 
-from app import routes, models, errors
+from app import routes, models
 
 if not app.debug:
     #Log errors by emailing them. Must be set up first
