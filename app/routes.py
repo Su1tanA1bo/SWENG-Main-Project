@@ -6,7 +6,7 @@ from app.models import User
 from werkzeug.urls import url_parse
 from datetime import datetime
 
-
+#function for handling webapp home page. Currently contains temporary posts passed by default, will be updated later
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -23,6 +23,7 @@ def index():
     ]
     return render_template("index.html", title='Home Page', posts=posts)
 
+#function for handling user log in page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -40,11 +41,13 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
+#function for handling logout "page" - just logs user out and redirects when they go to it
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
+#function for handling page for registering new users to the website
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -59,6 +62,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
+#function for handling indivual user pages on site
 @app.route('/user/<username>')
 @login_required
 def user(username):
@@ -69,12 +73,14 @@ def user(username):
     ]
     return render_template('user.html', user=user, posts=posts)
 
+#function for updating time user was last seen at. Currently in UTC, will update later
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
+#function for handling edit profile page
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
