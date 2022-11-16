@@ -7,6 +7,7 @@
 
 from pprint import pprint
 from requests import get
+from user import User
 
 
 def api_fetch():
@@ -24,7 +25,7 @@ def api_fetch():
     return response
 
 
-def commits_per_day(json):
+def commit_info(json):
     commits = {}
     for entry in json:
         name = entry["commit"]["author"]["name"]
@@ -33,16 +34,19 @@ def commits_per_day(json):
         time = date[11:-1]
 
         if name in commits:
-            if day in commits[name]:
-                commits[name][day].append(time)
-            else:
-                commits[name][day] = [time]
+            commits[name].add_commit(day, time)
         else:
-            commits[name] = {day: [time]}
+            commits[name] = User(name, day, time)
 
-    pprint(commits)
+    for name in commits:
+        commits[name].resolve_stats()
+        print(f"User: {name}\nDays committed: {commits[name].days_committed}\n"
+              f"Most commits: {commits[name].most_commits[1]} on {commits[name].most_commits[0]}\n"
+              f"Least commits: {commits[name].least_commits[1]} on {commits[name].least_commits[0]}\n"
+              f"Average frequency: {commits[name].avg_freq} per day")
+        commits[name].print_commits()
 
 
 if __name__ == '__main__':
     response = api_fetch()
-    commits_per_day(response)
+    commit_info(response)
