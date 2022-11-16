@@ -40,10 +40,12 @@ def commit_info(json):
 
     for name in commits:
         commits[name].resolve_stats()
-        print(f"User: {name}\nDays committed: {commits[name].days_committed}\n"
+        print(f"User: {name}\n"
+              f"Total commits: {commits[name].total_commits}\n"
+              f"Days committed: {commits[name].days_committed}\n"
               f"Most commits: {commits[name].most_commits[1]} on {commits[name].most_commits[0]}\n"
               f"Least commits: {commits[name].least_commits[1]} on {commits[name].least_commits[0]}\n"
-              f"Average frequency: {commits[name].avg_freq} per day")
+              f"Average frequency: {commits[name].avg_freq} commits per day")
         commits[name].print_commits()
 
 
