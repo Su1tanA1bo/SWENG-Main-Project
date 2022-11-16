@@ -1,23 +1,15 @@
 ##*************************************************************************
-#   api calls are made in this file
+#   api calls and handling of the response
 #
 #   @author	 Jamie Taylor
 #   @Creation Date: 16/11/2022
 ##*************************************************************************
 
-from bisect import bisect_left, insort
 from pprint import pprint
 from requests import get
 
 
-def is_present(x, list):
-    i = bisect_left(list, x)
-    if i != len(list) and list[i] == x:
-        return True
-    return False
-
-
-if __name__ == '__main__':
+def api_fetch():
     username = "taylorj8"
     repo = "protocol"
     auth = "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"
@@ -28,18 +20,29 @@ if __name__ == '__main__':
     }
 
     url = f"https://api.github.com/repos/{username}/{repo}/commits?&per_page=100"
-
     response = get(url, headers=headers).json()
+    return response
 
-    dates = {}
-    for entry in response:
-        name = entry["committer"]["login"]
-        time = entry["commit"]["author"]["date"]
 
-        if name in dates:
-            insort(dates[name], time)
+def commits_per_day(json):
+    commits = {}
+    for entry in json:
+        name = entry["commit"]["author"]["name"]
+        date = entry["commit"]["author"]["date"]
+        day = date[:10]
+        time = date[11:-1]
+
+        if name in commits:
+            if day in commits[name]:
+                commits[name][day].append(time)
+            else:
+                commits[name][day] = [time]
         else:
-            dates[name] = [time]
+            commits[name] = {day: [time]}
 
-    pprint(dates)
+    pprint(commits)
 
+
+if __name__ == '__main__':
+    response = api_fetch()
+    commits_per_day(response)
