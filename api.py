@@ -15,7 +15,7 @@ def api_fetch(ref):
     username = "taylorj8"
     repo = "protocol"
     auth = "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"
-    queries = "?per_page=10"
+    queries = "?per_page=100"
     if not ref:
         commit = ""
     else:
@@ -63,7 +63,8 @@ def print_stats(commits):
               f"Most commits: {commits[name].most_commits[1]} on {commits[name].most_commits[0]}\n"
               f"Least commits: {commits[name].least_commits[1]} on {commits[name].least_commits[0]}\n"
               f"Average frequency: {commits[name].avg_freq} commits per day\n"
-              f"Largest commit: {commits[name].most_changes}\n")
+              f"Largest commit: {commits[name].most_changes[0]} changes\n"
+              f"Average commit size: {commits[name].avg_no_changes} changes")
         # commits[name].print_commits()
 
 

@@ -15,7 +15,7 @@ class Commit:
         self.time = time
         self.additions = additions
         self.deletions = deletions
-        self.total_changes = additions + deletions
+        self.changes = additions + deletions
 
     def __repr__(self):
         return f"Message: {self.message}\n" \

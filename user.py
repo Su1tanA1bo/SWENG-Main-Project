@@ -28,6 +28,10 @@ class User:
         self.most_changes = (-1, None)
         self.least_changes = (-1, None)
 
+        self.avg_no_additions = -1
+        self.avg_no_deletions = -1
+        self.avg_no_changes = -1
+
     def add(self, commit):
         if commit.date in self.commits:
             self.commits[commit.date].append(commit)
@@ -51,6 +55,10 @@ class User:
         most_deletions = 0
         least_deletions = float('inf')
 
+        total_changes = 0
+        total_additions = 0
+        total_deletions = 0
+
         for day in self.commits:
             if len(self.commits[day]) > most_commits:
                 most_commits = len(self.commits[day])
@@ -60,27 +68,35 @@ class User:
                 least_commits = len(self.commits[day])
                 self.least_commits = (day, least_commits)
 
-                for commit in self.commits[day]:
-                    if commit.total_changes > most_changes:
-                        most_changes = commit.total_changes
-                        self.most_changes = (most_changes, commit)
-                    if commit.total_changes < least_changes:
-                        least_changes = commit.total_changes
-                        self.least_changes = (least_changes, commit)
+            for commit in self.commits[day]:
+                total_changes += commit.changes
+                total_additions += commit.additions
+                total_deletions += commit.deletions
 
-                    if commit.additions > most_additions:
-                        most_additions = commit.additions
-                        self.most_additions = (most_additions, commit)
-                    if commit.additions < least_additions:
-                        least_additions = commit.additions
-                        self.least_additions = (least_additions, commit)
+                if commit.changes > most_changes:
+                    most_changes = commit.changes
+                    self.most_changes = (most_changes, commit)
+                if commit.changes < least_changes:
+                    least_changes = commit.changes
+                    self.least_changes = (least_changes, commit)
 
-                    if commit.deletions > most_deletions:
-                        most_deletions = commit.deletions
-                        self.most_deletions = (most_deletions, commit)
-                    if commit.deletions < least_deletions:
-                        least_deletions = commit.deletions
-                        self.least_deletions = (least_deletions, commit)
+                if commit.additions > most_additions:
+                    most_additions = commit.additions
+                    self.most_additions = (most_additions, commit)
+                if commit.additions < least_additions:
+                    least_additions = commit.additions
+                    self.least_additions = (least_additions, commit)
+
+                if commit.deletions > most_deletions:
+                    most_deletions = commit.deletions
+                    self.most_deletions = (most_deletions, commit)
+                if commit.deletions < least_deletions:
+                    least_deletions = commit.deletions
+                    self.least_deletions = (least_deletions, commit)
+
+        self.avg_no_changes = round(total_changes / self.total_commits)
+        self.avg_no_additions = round(total_additions / self.total_commits)
+        self.avg_no_deletions = round(total_deletions / self.total_commits)
 
     def return_commit_message(self, day, time):
         return self.commits[day][time]["Message"]
