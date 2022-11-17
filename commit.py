@@ -8,9 +8,11 @@
 
 class Commit:
 
-    def __init__(self, sha, message, additions, deletions):
+    def __init__(self, sha, message, date, time, additions, deletions):
         self.sha = sha
         self.message = message
+        self.date = date
+        self.time = time
         self.additions = additions
         self.deletions = deletions
         self.total_changes = additions + deletions

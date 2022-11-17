@@ -15,7 +15,7 @@ def api_fetch(ref):
     username = "taylorj8"
     repo = "protocol"
     auth = "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"
-    queries = "?per_page=20"
+    queries = "?per_page=10"
     if not ref:
         commit = ""
     else:
@@ -44,12 +44,12 @@ def commit_info(json):
         commit_json = api_fetch(sha)
         message = commit_json["commit"]["message"]
         changes = commit_json["stats"]
-        commit = Commit(sha, message, changes["additions"], changes["deletions"])
+        commit = Commit(sha, message, day, time, changes["additions"], changes["deletions"])
 
         if name in commits:
-            commits[name].add_commit(day, time, commit)
+            commits[name].add(commit)
         else:
-            commits[name] = User(name, day, time, commit)
+            commits[name] = User(name, commit)
 
     print_stats(commits)
 
@@ -63,8 +63,8 @@ def print_stats(commits):
               f"Most commits: {commits[name].most_commits[1]} on {commits[name].most_commits[0]}\n"
               f"Least commits: {commits[name].least_commits[1]} on {commits[name].least_commits[0]}\n"
               f"Average frequency: {commits[name].avg_freq} commits per day\n"
-              f"Largest commit: {commits[name].most_changes}")
-        commits[name].print_commits()
+              f"Largest commit: {commits[name].most_changes}\n")
+        # commits[name].print_commits()
 
 
 if __name__ == '__main__':

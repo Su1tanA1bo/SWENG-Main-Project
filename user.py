@@ -8,31 +8,13 @@
 from pprint import pprint
 
 
-def resolve_changes(commits, ref):
-    most = (0, None)
-    least = (float('inf'), None)
-
-    # if self.commits[day][index] > most:
-    #     most = self.commits[day].
-    # if self.commits[day][index] < least:
-    #     least = self.commits[day][index]
-
-    for commit in commits:
-        if commit.total_changes > most[0]:
-            most = (commit.total_changes, commit)
-        if commit.total_changes < least[0]:
-            least = (commit.total_changes, commit)
-
-    return most, least
-
-
 class User:
 
-    def __init__(self, name, day, time, commit):
+    def __init__(self, name, commit):
         self.name = name
         self.commits = {}
         self.total_commits = 0
-        self.add_commit(day, time, commit)
+        self.add(commit)
 
         self.days_committed = None
         self.avg_freq = -1
@@ -46,11 +28,11 @@ class User:
         self.most_changes = (-1, None)
         self.least_changes = (-1, None)
 
-    def add_commit(self, day, time, commit):
-        if day in self.commits:
-            self.commits[day].append({time: commit})
+    def add(self, commit):
+        if commit.date in self.commits:
+            self.commits[commit.date].append(commit)
         else:
-            self.commits[day] = [{time: commit}]
+            self.commits[commit.date] = [commit]
         self.total_commits += 1
 
     def resolve_stats(self):
@@ -59,6 +41,15 @@ class User:
 
         most_commits = 0
         least_commits = float('inf')
+
+        most_changes = 0
+        least_changes = float('inf')
+
+        most_additions = 0
+        least_additions = float('inf')
+
+        most_deletions = 0
+        least_deletions = float('inf')
 
         for day in self.commits:
             if len(self.commits[day]) > most_commits:
@@ -69,9 +60,27 @@ class User:
                 least_commits = len(self.commits[day])
                 self.least_commits = (day, least_commits)
 
-            # self.most_additions, self.least_additions = self.resolve_changes(day, "additions")
-            # self.most_deletions, self.least_deletions = self.resolve_changes(day, "deletions")
-            self.most_changes, self.least_changes = resolve_changes(self.commits[day], "changes")
+                for commit in self.commits[day]:
+                    if commit.total_changes > most_changes:
+                        most_changes = commit.total_changes
+                        self.most_changes = (most_changes, commit)
+                    if commit.total_changes < least_changes:
+                        least_changes = commit.total_changes
+                        self.least_changes = (least_changes, commit)
+
+                    if commit.additions > most_additions:
+                        most_additions = commit.additions
+                        self.most_additions = (most_additions, commit)
+                    if commit.additions < least_additions:
+                        least_additions = commit.additions
+                        self.least_additions = (least_additions, commit)
+
+                    if commit.deletions > most_deletions:
+                        most_deletions = commit.deletions
+                        self.most_deletions = (most_deletions, commit)
+                    if commit.deletions < least_deletions:
+                        least_deletions = commit.deletions
+                        self.least_deletions = (least_deletions, commit)
 
     def return_commit_message(self, day, time):
         return self.commits[day][time]["Message"]
