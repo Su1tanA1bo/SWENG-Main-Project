@@ -5,6 +5,12 @@ Index
 {%endblock%}
 
 {%block content%}
+<html>
+<head>
+ 
+  
+</head>
+<body style="background-color:antiquewhite" >
 
 <div class="col d-grid gap-5 d-flex justify-content-center ">
 <div class="card " style="width: 16rem;">
@@ -12,7 +18,7 @@ Index
   <div class="card-body">
     <h5 class="card-title">User-1</h5>
     <p class="card-text">Click Here to check the measure of user-1.</p>
-    <a href="user1" class="btn btn-primary">Measure User-1</a>
+    <a href="#" class="btn btn-primary" onclick="href='{{ url_for('user1')}}'">Measure User-1</a>
   </div>
 </div>
 <div class="card " style="width: 16rem;">
@@ -20,10 +26,10 @@ Index
   <div class="card-body">
     <h5 class="card-title">User-2</h5>
     <p class="card-text">Click Here to check the measure of user-2.</p>
-    <a href="/user2" class="btn btn-primary">Measure User-2</a>
+    <a href="#" class="btn btn-primary" onclick="href='{{ url_for('user2')}}'">Measure User-2</a>
   </div>
 </div>
     </div>
-
-
+</body>
+</html>
 {%endblock%}
