@@ -22,10 +22,7 @@ def make_commit(name, sha, message, date, time, additions, deletions):
     }
 
 
-def api_fetch(ref):
-    username = "taylorj8"
-    repo = "protocol"
-    auth = "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"
+def api_fetch(username, repo, auth, ref=False):
     queries = "?per_page=100"
     if not ref:
         commit = ""
@@ -43,7 +40,7 @@ def api_fetch(ref):
     return response
 
 
-def commit_info(json):
+def commit_info(username, repo, auth, json):
     user_list = {"universal": UserStats()}
     for entry in json:
         name = entry["commit"]["author"]["name"]
@@ -52,7 +49,7 @@ def commit_info(json):
         time = date[11:-1]
 
         sha = entry["sha"]
-        commit_json = api_fetch(sha)
+        commit_json = api_fetch(username, repo, auth, sha)
         message = commit_json["commit"]["message"]
         changes = commit_json["stats"]
         commit = make_commit(name, sha, message, day, time, changes["additions"], changes["deletions"])
@@ -86,6 +83,10 @@ def print_stats(user_list):
 
 
 if __name__ == '__main__':
-    response = api_fetch(False)
+    username = "taylorj8"
+    repo = "protocol"
+    auth = "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"
+
+    response = api_fetch(username, repo, auth)
     # pprint(response)
-    commit_info(response)
+    commit_info(username, repo, auth, response)
