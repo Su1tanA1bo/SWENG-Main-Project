@@ -5,7 +5,6 @@
 #   @Creation Date: 16/11/2022
 ##*************************************************************************
 
-from commit import Commit
 from pprint import pprint
 from requests import get
 from user import UserStats
