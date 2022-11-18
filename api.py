@@ -8,14 +8,26 @@
 from commit import Commit
 from pprint import pprint
 from requests import get
-from user import User
+from user import UserStats
+
+
+def make_commit(sha, message, date, time, additions, deletions):
+    return {
+        "sha": sha,
+        "message": message,
+        "date": date,
+        "time": time,
+        "additions": additions,
+        "deletions": deletions,
+        "changes": additions + deletions
+    }
 
 
 def api_fetch(ref):
     username = "taylorj8"
     repo = "protocol"
     auth = "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"
-    queries = "?per_page=100"
+    queries = "?per_page=2"
     if not ref:
         commit = ""
     else:
@@ -33,7 +45,7 @@ def api_fetch(ref):
 
 
 def commit_info(json):
-    commits = {}
+    user_list = {}
     for entry in json:
         name = entry["commit"]["author"]["name"]
         date = entry["commit"]["author"]["date"]
@@ -44,28 +56,28 @@ def commit_info(json):
         commit_json = api_fetch(sha)
         message = commit_json["commit"]["message"]
         changes = commit_json["stats"]
-        commit = Commit(sha, message, day, time, changes["additions"], changes["deletions"])
+        commit = make_commit(sha, message, day, time, changes["additions"], changes["deletions"])
 
-        if name in commits:
-            commits[name].add(commit)
+        if name in user_list:
+            user_list[name].add(commit)
         else:
-            commits[name] = User(name, commit)
+            user_list[name] = UserStats(name, commit)
 
-    print_stats(commits)
+    print_stats(user_list)
 
 
-def print_stats(commits):
-    for name in commits:
-        commits[name].resolve_stats()
+def print_stats(user_list):
+    for name in user_list:
+        user_list[name].resolve_stats()
         print(f"User: {name}\n"
-              f"Total commits: {commits[name].total_commits}\n"
-              f"Days committed: {commits[name].days_committed}\n"
-              f"Most commits: {commits[name].most_commits[1]} on {commits[name].most_commits[0]}\n"
-              f"Least commits: {commits[name].least_commits[1]} on {commits[name].least_commits[0]}\n"
-              f"Average frequency: {commits[name].avg_freq} commits per day\n"
-              f"Largest commit: {commits[name].most_changes[0]} changes\n"
-              f"Average commit size: {commits[name].avg_no_changes} changes")
-        # commits[name].print_commits()
+              f"Total commits: {user_list[name].total_commits()}\n"
+              f"Days committed: {user_list[name].days_committed}\n"
+              f"Most commits: {user_list[name].most_commits[1]} on {user_list[name].most_commits[0]}\n"
+              f"Least commits: {user_list[name].least_commits[1]} on {user_list[name].least_commits[0]}\n"
+              f"Average frequency: {user_list[name].avg_freq} commits per day\n"
+              f"Largest commit: {user_list[name].most_changes[0]} changes\n"
+              f"Average commit size: {user_list[name].avg_no_changes} changes\n")
+        user_list[name].print_commits()
 
 
 if __name__ == '__main__':
