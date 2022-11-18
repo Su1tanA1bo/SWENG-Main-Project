@@ -10,9 +10,11 @@ from pprint import pprint
 
 class UserStats:
 
-    def __init__(self, name, commit):
-        self.name = name
-        self.commits = [commit]
+    def __init__(self, commit=None):
+        if commit is None:
+            self.commits = []
+        else:
+            self.commits = [commit]
 
         self.days_committed = None
         self.avg_freq = -1
@@ -108,3 +110,4 @@ class UserStats:
 
     def print_commits(self):
         pprint(self.commits)
+        print("\n")
