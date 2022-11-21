@@ -162,7 +162,7 @@ def repo(reponame):
     if(current_user.id == repo.owner_id):
         removeForm = RemoveUserFromRepo(repo.id)
         if removeForm.validate_on_submit() and removeForm.submit_remove.data:
-            user_form = User.query.filter_by(username=removeForm.username.data).first()
+            user_form = User.query.filter_by(username=removeForm.username_remove.data).first()
             if(user_form is not None):
                 repo.remove_from(user_form)
                 db.session.commit()
@@ -173,7 +173,7 @@ def repo(reponame):
         #add form to add user to repo if user is owner
         addform = AddUserToRepo()
         if addform.validate_on_submit() and addform.submit_add.data:
-            user_form = User.query.filter_by(username=addform.username.data).first()
+            user_form = User.query.filter_by(username=addform.username_add.data).first()
             if(user_form is not None):
                 if(repo.is_member(user_form.username)):
                     flash(_('User is already a member of repo'))
