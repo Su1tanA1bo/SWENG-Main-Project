@@ -15,8 +15,8 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, PostForm
-from app.models import User, Post
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, AddUserToRepo
+from app.models import User, Post, Repository
 from app.main import bp
 
 #function for updating time user was last seen at. Currently in UTC, will update later
@@ -141,3 +141,15 @@ def unfollow(username):
         return redirect(url_for('main.user', username=username))
     else:
         return redirect(url_for('main.index'))
+
+
+#function for handling webapp home page. Displays all posts from followed users.
+
+@bp.route('/repo/<reponame>', methods=['GET', 'POST'])
+@login_required
+def repo(reponame):
+    repo = User.query.filter_by(reponame=reponame).first_or_404()
+    ##TODO: Redirect if current_user is not allowed into repo
+    ##TODO: All other data needed to be displayed on repo page goes here
+    form = AddUserToRepo()
+    return render_template('repo.html', user=user, form=form) ##TODO: Make repo.html file as part of frontend/change filename here

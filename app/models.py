@@ -107,7 +107,10 @@ members = db.Table('members',
 #Class for posts in database.
 class Repository(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    reponame = db.Column(db.String(64), index=True, unique=True)
+
     ##TODO: add storage for all the data that a repository holds here
+    
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
