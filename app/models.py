@@ -116,6 +116,17 @@ class Repository(db.Model):
         primaryjoin=(members.c.member_id == id),
         secondaryjoin=(members.c.member_id == id),
         backref=db.backref('members', lazy='dynamic'), lazy='dynamic')
+    
+    #Methods for allowing users to change their member relationships with repos
+    def add_to(self, user):
+        if not self.is_following(user):
+            self.membered.append(user)
+    def remove_from(self, user):
+        if self.is_following(user):
+            self.membered.remove(user)
+    def is_member(self, user):
+        return self.membered.filter(
+            members.c.member_id == user.id).count() > 0
 
 
 
