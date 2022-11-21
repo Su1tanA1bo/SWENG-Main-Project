@@ -110,7 +110,7 @@ class Repository(db.Model):
     reponame = db.Column(db.String(64), index=True, unique=True)
 
     ##TODO: add storage for all the data that a repository holds here
-    
+
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
@@ -127,7 +127,9 @@ class Repository(db.Model):
     def remove_from(self, user):
         if self.is_following(user):
             self.membered.remove(user)
+    # Return true if user is owner, or is member
     def is_member(self, user):
+        if(user.id == self.owner_id): return True
         return self.membered.filter(
             members.c.member_id == user.id).count() > 0
 

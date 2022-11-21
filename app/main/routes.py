@@ -149,11 +149,12 @@ def unfollow(username):
 @login_required
 def repo(reponame):
     repo = Repository.query.filter_by(reponame=reponame).first_or_404()
-    username = current_user.username
-    user = repo.membered.query.filter_by(username=username).first()
-    if user is None:
-            flash(_('You do not have access to this repo!'))
-            return redirect(url_for('main.user', username=username))
+
+    if not repo.is_member(current_user):
+        #If user is neither member or owner, redirect to index
+        flash(_('You do not have access to this repo!'))
+        return redirect(url_for('main.index'))
+
 
     ##TODO: All other data needed to be displayed on repo page goes here
 
@@ -164,9 +165,12 @@ def repo(reponame):
         if addform.validate_on_submit():
             user_form = User.query.filter_by(username=addform.username.data).first()
             if(user_form is not None):
-                repo.add_to(user_form)
-                db.session.commit()
-                flash(_('User added to repo'))
+                if(repo.ismember(user_form)):
+                    flash(_('User is already a member of repo'))
+                else:
+                    repo.add_to(user_form)
+                    db.session.commit()
+                    flash(_('User added to repo'))
             else:
                 flash(_('User not found'))
     
