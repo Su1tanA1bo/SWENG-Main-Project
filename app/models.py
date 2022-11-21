@@ -97,3 +97,43 @@ class Post(db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
+
+
+#Members relational table. Used by repo to determine membership
+repo_members = db.Table('repo_member',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('repo_id', db.Integer, db.ForeignKey('repository.id'))
+)
+
+#Class for posts in database.
+class Repository(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    reponame = db.Column(db.String(64), index=True, unique=True)
+
+    ##TODO: add storage for all the data that a repository holds here
+
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    #defines members as a many to many relationship within the repo
+    members = db.relationship('User', secondary=repo_members, 
+            backref=db.backref('repos', lazy='dynamic'), 
+            lazy='dynamic')
+    
+    #Methods for allowing users to change their member relationships with repos
+    def add_to(self, user):
+        if not self.is_member(user.username):
+            self.members.append(user)
+    def remove_from(self, user):
+        if self.is_member(user.username):
+            self.members.remove(user)
+
+    # Return true if user is owner, or is member
+    def is_member(self, username):
+        user = User.query.filter_by(username=username).first()
+        if(user is None): return False
+        if(user.id == self.owner_id): return True
+        return self.members.filter(
+            repo_members.c.user_id == user.id).count() > 0
+
+
+
