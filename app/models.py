@@ -97,6 +97,13 @@ class Post(db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
+
+#Members relational table. Used by repo to determine membership
+members = db.Table('members',
+    db.Column('member_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('member_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 #Class for posts in database.
 class Repository(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -104,9 +111,11 @@ class Repository(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
-    followed = db.relationship(
-        'User', secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    membered = db.relationship(
+        'User', secondary=members,
+        primaryjoin=(members.c.member_id == id),
+        secondaryjoin=(members.c.member_id == id),
+        backref=db.backref('members', lazy='dynamic'), lazy='dynamic')
+
+
 
