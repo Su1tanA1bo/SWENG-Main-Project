@@ -115,15 +115,17 @@ class Repository(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
-    members = db.relationship('User', secondary=repo_members, backref='repos')
+    members = db.relationship('User', secondary=repo_members, 
+            backref=db.backref('repos', lazy='dynamic'), 
+            lazy='dynamic')
     
     #Methods for allowing users to change their member relationships with repos
     def add_to(self, user):
         if not self.is_member(user.username):
-            self.membered.append(user)
+            self.members.append(user)
     def remove_from(self, user):
         if self.is_member(user.username):
-            self.membered.remove(user)
+            self.members.remove(user)
 
     # Return true if user is owner, or is member
     def is_member(self, username):
