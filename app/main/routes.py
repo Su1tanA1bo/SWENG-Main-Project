@@ -157,12 +157,22 @@ def repo(reponame):
 
 
     ##TODO: All other data needed to be displayed on repo page goes here
-
+    
     ##show a form to add users to repo only if owner of the form
-    addform = EmptyForm
     if(current_user.id == repo.owner_id):
+        removeForm = RemoveUserFromRepo(repo.id)
+        if removeForm.validate_on_submit() and removeForm.submit_remove.data:
+            user_form = User.query.filter_by(username=removeForm.username.data).first()
+            if(user_form is not None):
+                repo.remove_from(user_form)
+                db.session.commit()
+                flash(_('User removed from repo'))
+            else:
+                flash(_('User not found'))
+
+        #add form to add user to repo if user is owner
         addform = AddUserToRepo()
-        if addform.validate_on_submit():
+        if addform.validate_on_submit() and addform.submit_add.data:
             user_form = User.query.filter_by(username=addform.username.data).first()
             if(user_form is not None):
                 if(repo.is_member(user_form.username)):
@@ -173,20 +183,12 @@ def repo(reponame):
                     flash(_('User added to repo'))
             else:
                 flash(_('User not found'))
-    
-    ##show a form to add users to repo only if owner of the form
-    removeForm = EmptyForm
-    if(current_user.id == repo.owner_id):
-        removeForm = RemoveUserFromRepo(repo.id)
-        if removeForm.validate_on_submit():
-            user_form = User.query.filter_by(username=removeForm.username.data).first()
-            if(user_form is not None):
-                repo.remove_from(user_form)
-                db.session.commit()
-                flash(_('User removed from repo'))
-            else:
-                flash(_('User not found'))
+
+        #render template with forms only if user is owner
+        return render_template('repo_owner.html', addform=addform, removeForm=removeForm) 
+
 
     ##TODO: Make repo.html file as part of frontend/change filename here
     ##TODO: When the above is done, it will also need to be passed the processed repo info from above
-    return render_template('repo.html', user=user, addform=addform, removeForm=removeForm) 
+    return render_template('repo_viewer.html')
+    

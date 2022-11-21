@@ -34,20 +34,20 @@ class PostForm(FlaskForm):
 #Form for adding additional users to a repo
 class AddUserToRepo(FlaskForm):
     #Enter username as text field
-    username = StringField(_l('Username'), validators=[DataRequired()])
-    submit = SubmitField(_l('Add User to Repo'))
+    username_add = StringField(_l('Username'), validators=[DataRequired()])
+    submit_add = SubmitField(_l('Add User to Repo'))
 
     ##Only add user to repo if user is on the site
     def validate_username(self, username):
-        user = User.query.filter_by(username=self.username.data).first()
+        user = User.query.filter_by(username=self.username_add.data).first()
         if user is None:
             raise ValidationError(_('User not found.'))
 
 #Form for removing users from a repo
 class RemoveUserFromRepo(FlaskForm):
     #Enter username as text field
-    username = StringField(_l('Username'), validators=[DataRequired()])
-    submit = SubmitField(_l('Remove User from Repo'))
+    username_remove = StringField(_l('Username'), validators=[DataRequired()])
+    submit_remove = SubmitField(_l('Remove User from Repo'))
 
     #Come initiaed with the repo you are removing from
     def __init__(self, repo_id, *args, **kwargs):
@@ -56,5 +56,5 @@ class RemoveUserFromRepo(FlaskForm):
 
     ##Only add user to repo if user is on the site
     def validate_username(self, username):
-        if not self.repo.is_member(self.username.data):
+        if not self.repo.is_member(self.username_remove.data):
             raise ValidationError(_('User already does not have acess to this repository.'))
