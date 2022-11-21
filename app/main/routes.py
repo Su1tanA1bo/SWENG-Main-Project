@@ -148,8 +148,18 @@ def unfollow(username):
 @bp.route('/repo/<reponame>', methods=['GET', 'POST'])
 @login_required
 def repo(reponame):
-    repo = User.query.filter_by(reponame=reponame).first_or_404()
-    ##TODO: Redirect if current_user is not allowed into repo
+    repo = Repository.query.filter_by(reponame=reponame).first_or_404()
+    username = current_user.username
+    user = repo.membered.query.filter_by(username=username).first()
+    if user is None:
+            flash(_('You do not have access to this repo!'))
+            return redirect(url_for('main.user', username=username))
+            
     ##TODO: All other data needed to be displayed on repo page goes here
-    form = AddUserToRepo()
+
+    ##show a form to add users to repo only if owner of the form
+    form = EmptyForm
+    if(current_user.id == repo.owner_id):
+        form = AddUserToRepo()
+
     return render_template('repo.html', user=user, form=form) ##TODO: Make repo.html file as part of frontend/change filename here
