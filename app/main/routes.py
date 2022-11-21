@@ -154,12 +154,20 @@ def repo(reponame):
     if user is None:
             flash(_('You do not have access to this repo!'))
             return redirect(url_for('main.user', username=username))
-            
+
     ##TODO: All other data needed to be displayed on repo page goes here
 
     ##show a form to add users to repo only if owner of the form
-    form = EmptyForm
+    addform = EmptyForm
     if(current_user.id == repo.owner_id):
-        form = AddUserToRepo()
+        addform = AddUserToRepo()
+        if form.validate_on_submit():
+            user_form = User.query.filter_by(username=addform.username.data).first()
+            if(user_form is not None):
+                repo.add_to(user_form)
+                db.session.commit()
+                flash(_('User added to repo'))
+            else:
+                flash(_('User not found'))
 
-    return render_template('repo.html', user=user, form=form) ##TODO: Make repo.html file as part of frontend/change filename here
+    return render_template('repo.html', user=user, addform=addform) ##TODO: Make repo.html file as part of frontend/change filename here
