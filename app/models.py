@@ -98,16 +98,11 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-#Members relational table. Used by repo to determine membership
-members = db.Table('members',
-    db.Column('member_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('member_id', db.Integer, db.ForeignKey('user.id'))
-)
 
 #Members relational table. Used by repo to determine membership
-viewers = db.Table('viewers',
-    db.Column('viewer_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('viewer_of_id', db.Integer, db.ForeignKey('user.id'))
+repo_members = db.Table('repo_member',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('repo_id', db.Integer, db.ForeignKey('repository.id'))
 )
 
 #Class for posts in database.
@@ -120,11 +115,7 @@ class Repository(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
-    membered = db.relationship(
-        'User', secondary=viewers,
-        primaryjoin=(viewers.c.viewer_id == id),
-        secondaryjoin=(viewers.c.viewer_of_id == id),
-        backref=db.backref('viewers', lazy='dynamic'), lazy='dynamic')
+    members = db.relationship('User', secondary=repo_members, backref='repos')
     
     #Methods for allowing users to change their member relationships with repos
     def add_to(self, user):
@@ -139,8 +130,8 @@ class Repository(db.Model):
         user = User.query.filter_by(username=username).first()
         if(user is None): return False
         if(user.id == self.owner_id): return True
-        return self.membered.filter(
-            members.c.member_id == user.id).count() > 0
+        return self.members.filter(
+            repo_members.c.user_id == user.id).count() > 0
 
 
 
