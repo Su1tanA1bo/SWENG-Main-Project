@@ -15,7 +15,7 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import db
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, AddUserToRepo
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, AddUserToRepo, RemoveUserFromRepo
 from app.models import User, Post, Repository
 from app.main import bp
 
@@ -161,7 +161,7 @@ def repo(reponame):
     addform = EmptyForm
     if(current_user.id == repo.owner_id):
         addform = AddUserToRepo()
-        if form.validate_on_submit():
+        if addform.validate_on_submit():
             user_form = User.query.filter_by(username=addform.username.data).first()
             if(user_form is not None):
                 repo.add_to(user_form)
@@ -169,5 +169,19 @@ def repo(reponame):
                 flash(_('User added to repo'))
             else:
                 flash(_('User not found'))
+    
+    ##show a form to add users to repo only if owner of the form
+    removeForm = EmptyForm
+    if(current_user.id == repo.owner_id):
+        removeForm = RemoveUserFromRepo()
+        if removeForm.validate_on_submit():
+            user_form = User.query.filter_by(username=removeForm.username.data).first()
+            if(user_form is not None):
+                repo.remove_from(user_form)
+                db.session.commit()
+                flash(_('User removed from repo'))
+            else:
+                flash(_('User not found'))
 
-    return render_template('repo.html', user=user, addform=addform) ##TODO: Make repo.html file as part of frontend/change filename here
+    ##TODO: Make repo.html file as part of frontend/change filename here
+    return render_template('repo.html', user=user, addform=addform, removeForm=removeForm) 
