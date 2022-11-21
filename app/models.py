@@ -104,6 +104,12 @@ members = db.Table('members',
     db.Column('member_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+#Members relational table. Used by repo to determine membership
+viewers = db.Table('viewers',
+    db.Column('viewer_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('viewer_of_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 #Class for posts in database.
 class Repository(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -115,20 +121,23 @@ class Repository(db.Model):
 
     #defines members as a many to many relationship within the repo
     membered = db.relationship(
-        'User', secondary=members,
-        primaryjoin=(members.c.member_id == id),
-        secondaryjoin=(members.c.member_id == id),
-        backref=db.backref('members', lazy='dynamic'), lazy='dynamic')
+        'User', secondary=viewers,
+        primaryjoin=(viewers.c.viewer_id == id),
+        secondaryjoin=(viewers.c.viewer_of_id == id),
+        backref=db.backref('viewers', lazy='dynamic'), lazy='dynamic')
     
     #Methods for allowing users to change their member relationships with repos
     def add_to(self, user):
-        if not self.is_following(user):
+        if not self.is_member(user.username):
             self.membered.append(user)
     def remove_from(self, user):
-        if self.is_following(user):
+        if self.is_member(user.username):
             self.membered.remove(user)
+
     # Return true if user is owner, or is member
-    def is_member(self, user):
+    def is_member(self, username):
+        user = User.query.filter_by(username=username).first()
+        if(user is None): return False
         if(user.id == self.owner_id): return True
         return self.membered.filter(
             members.c.member_id == user.id).count() > 0

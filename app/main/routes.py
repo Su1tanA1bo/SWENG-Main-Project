@@ -150,7 +150,7 @@ def unfollow(username):
 def repo(reponame):
     repo = Repository.query.filter_by(reponame=reponame).first_or_404()
 
-    if not repo.is_member(current_user):
+    if not repo.is_member(current_user.username):
         #If user is neither member or owner, redirect to index
         flash(_('You do not have access to this repo!'))
         return redirect(url_for('main.index'))
@@ -165,7 +165,7 @@ def repo(reponame):
         if addform.validate_on_submit():
             user_form = User.query.filter_by(username=addform.username.data).first()
             if(user_form is not None):
-                if(repo.ismember(user_form)):
+                if(repo.is_member(user_form.username)):
                     flash(_('User is already a member of repo'))
                 else:
                     repo.add_to(user_form)
@@ -177,7 +177,7 @@ def repo(reponame):
     ##show a form to add users to repo only if owner of the form
     removeForm = EmptyForm
     if(current_user.id == repo.owner_id):
-        removeForm = RemoveUserFromRepo()
+        removeForm = RemoveUserFromRepo(repo.id)
         if removeForm.validate_on_submit():
             user_form = User.query.filter_by(username=removeForm.username.data).first()
             if(user_form is not None):
