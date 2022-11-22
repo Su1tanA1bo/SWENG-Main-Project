@@ -36,7 +36,7 @@ def run_query(owner, repo, auth):
     end_cursor = None
 
     while has_next_page:
-        query = get_query(owner, repo, "main", end_cursor)
+        query = get_query(owner, repo, "graphql", end_cursor)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
 
@@ -135,9 +135,9 @@ def print_stats(user_list):
 
 
 if __name__ == '__main__':
-    owner = "taylorj8"
-    repo = "protocol"
-    auth = "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"
+    owner = "Su1tanA1bo"
+    repo = "SWENG-Main-Project"
+    auth = "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"
 
     result = run_query(owner, repo, auth)  # Execute the query
     # pprint(result)
