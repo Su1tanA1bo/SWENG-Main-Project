@@ -54,3 +54,4 @@ werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'FOC'. 
 2022-11-22 19:26:29,074 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
 2022-11-22 19:26:51,262 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
 2022-11-22 19:35:34,728 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
+2022-11-22 20:11:59,317 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
