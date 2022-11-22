@@ -5,6 +5,9 @@
 #   @Creation Date: 16/11/2022
 ##*************************************************************************
 
+import json
+from pprint import pprint
+
 from requests import get
 from user import UserStats
 
@@ -22,12 +25,31 @@ def make_commit(name, sha, message, date, time, additions, deletions):
     }
 
 
-def api_fetch(username, repo, auth, ref=False):
-    queries = "?per_page=100"
-    if not ref:
-        commit = ""
-    else:
-        commit = "/" + ref
+def fetch_list(username, repo, auth):
+
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+    params = {"per_page": 100}
+
+    another_page = True
+    url = f"https://api.github.com/repos/{username}/{repo}/commits"
+    results = []
+
+    while another_page:  # the list of teams is paginated
+        response = get(url, headers=headers, params=params)
+        j_response = json.loads(response.text)
+        results.append(j_response)
+        if "next" in response.links:  # check if there is another page of organisations
+            url = response.links["next"]["url"]
+        else:
+            another_page = False
+
+    return results
+
+
+def fetch_commit(username, repo, auth, ref):
 
     headers = {
         "Authorization": "token " + auth,
@@ -35,30 +57,31 @@ def api_fetch(username, repo, auth, ref=False):
     }
 
     # if ref specified as input, searches for specific commit, otherwise lists all commits
-    url = f"https://api.github.com/repos/{username}/{repo}/commits{commit}{queries}"
+    url = f"https://api.github.com/repos/{username}/{repo}/commits/{ref}"
     response = get(url, headers=headers).json()
     return response
 
 
-def commit_info(username, repo, auth, json):
+def commit_info(username, repo, auth, json_list):
     user_list = {"universal": UserStats()}
-    for entry in json:
-        name = entry["commit"]["author"]["name"]
-        date = entry["commit"]["author"]["date"]
-        day = date[:10]
-        time = date[11:-1]
+    for j_response in json_list:
+        for entry in j_response:
+            name = entry["commit"]["author"]["name"]
+            date = entry["commit"]["author"]["date"]
+            day = date[:10]
+            time = date[11:-1]
 
-        sha = entry["sha"]
-        commit_json = api_fetch(username, repo, auth, sha)
-        message = commit_json["commit"]["message"]
-        changes = commit_json["stats"]
-        commit = make_commit(name, sha, message, day, time, changes["additions"], changes["deletions"])
+            sha = entry["sha"]
+            commit_json = fetch_commit(username, repo, auth, sha)
+            message = commit_json["commit"]["message"]
+            changes = commit_json["stats"]
+            commit = make_commit(name, sha, message, day, time, changes["additions"], changes["deletions"])
 
-        if name in user_list:
-            user_list[name].add(commit)
-        else:
-            user_list[name] = UserStats(commit)
-        user_list["universal"].add(commit)
+            if name in user_list:
+                user_list[name].add(commit)
+            else:
+                user_list[name] = UserStats(commit)
+            user_list["universal"].add(commit)
 
     print_stats(user_list)
 
@@ -87,6 +110,6 @@ if __name__ == '__main__':
     repo = "protocol"
     auth = "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"
 
-    response = api_fetch(username, repo, auth)
-    # pprint(response)
+    response = fetch_list(username, repo, auth)
+    pprint(response)
     commit_info(username, repo, auth, response)
