@@ -1,0 +1,29 @@
+schema {
+    query: Query
+}
+
+type Commit {
+    name: String!
+    sha: String!
+    message: String!
+    date: String!
+    additions: Integer!
+    deletions: Integer!
+}
+
+type CommitResult {
+    success: Boolean!
+    errors: [String]
+    commit: Commit
+}
+
+type CommitsResult {
+    success: Boolean!
+    errors: [String]
+    commit: [Commit]
+}
+
+type Query {
+    listCommits: CommitsResult!
+    getPost(name: String!): CommitResult!
+}

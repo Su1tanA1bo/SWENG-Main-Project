@@ -31,21 +31,23 @@ def fetch_list(username, repo, auth):
         "Authorization": "token " + auth,
         "Accept": "application/vnd.github+json",
     }
-    params = {"per_page": 100}
+    params = {"per_page": 1}
 
     another_page = True
     url = f"https://api.github.com/repos/{username}/{repo}/commits"
     results = []
 
-    while another_page:  # the list of teams is paginated
+    while another_page:
         response = get(url, headers=headers, params=params)
         j_response = json.loads(response.text)
+        pprint(j_response)
         results.append(j_response)
+
         if "next" in response.links:  # check if there is another page of organisations
             url = response.links["next"]["url"]
+            another_page = False
         else:
             another_page = False
-
     return results
 
 
@@ -56,10 +58,8 @@ def fetch_commit(username, repo, auth, ref):
         "Accept": "application/vnd.github+json"
     }
 
-    # if ref specified as input, searches for specific commit, otherwise lists all commits
     url = f"https://api.github.com/repos/{username}/{repo}/commits/{ref}"
-    response = get(url, headers=headers).json()
-    return response
+    return get(url, headers=headers).json()
 
 
 def commit_info(username, repo, auth, json_list):
@@ -111,5 +111,6 @@ if __name__ == '__main__':
     auth = "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"
 
     response = fetch_list(username, repo, auth)
-    pprint(response)
+    print("Fetching from github...\n")
+    # pprint(response)
     commit_info(username, repo, auth, response)
