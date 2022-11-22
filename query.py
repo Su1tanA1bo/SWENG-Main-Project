@@ -31,16 +31,31 @@ def run_query(owner, repo, auth):
         "Authorization": "token " + auth,
         "Accept": "application/vnd.github+json",
     }
+    has_next_page = True
+    commit_list = []
+    end_cursor = None
 
-    query = get_query(owner, repo, "main")
-    request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-    if request.status_code == 200:
-        return request.json()["data"]["repository"]["ref"]["target"]["history"]["edges"]
-    else:
-        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+    while has_next_page:
+        query = get_query(owner, repo, "main", end_cursor)
+        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
+
+        has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
+        if has_next_page:
+            end_cursor = trimmed_request["pageInfo"]["endCursor"]
+
+        if request.status_code == 200:
+            commit_list += trimmed_request["edges"]
+        else:
+            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+    return commit_list
 
 
-def get_query(repo, owner, branch):
+def get_query(repo, owner, branch, end_cursor):
+
+    after = ""
+    if end_cursor is not None:
+        after = f', after: "{end_cursor}"'
 
     # The GraphQL query defined as a multi-line string.
     query = """
@@ -50,9 +65,10 @@ def get_query(repo, owner, branch):
           target {
             ... on Commit {
               id
-              history(first: 100) {
+              history(first: 100%s) {
                 pageInfo {
                   hasNextPage
+                  endCursor
                 }
                 edges {
                   node {
@@ -72,7 +88,7 @@ def get_query(repo, owner, branch):
         }
       }
     }
-    """ % (owner, repo, branch)
+    """ % (owner, repo, branch, after)
     return query
 
 
@@ -124,4 +140,5 @@ if __name__ == '__main__':
     auth = "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"
 
     result = run_query(owner, repo, auth)  # Execute the query
+    # pprint(result)
     commit_info(result)
