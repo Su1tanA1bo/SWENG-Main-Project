@@ -8,6 +8,7 @@
 #   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
 
+
 from datetime import datetime
 from hashlib import md5
 from time import time
@@ -134,27 +135,3 @@ class Repository(db.Model):
         if(user.id == self.owner_id): return True
         return self.members.filter(
             repo_members.c.user_id == user.id).count() > 0
-
-
-
-class Commit(db.Model):
-    name = db.Column(db.String)
-    sha = db.Column(db.String)
-    message = db.Column(db.String)
-    date = db.Column(db.String)
-    additions = db.Column(db.Integer)
-    deletions = db.Column(db.Integer)
-
-    def to_dict(self):
-        return {
-            "author": self.name,
-            "sha": self.sha,
-            "message": self.message,
-            "date": self.date[:10],
-            "time": self.date[11:-1],
-            "additions": self.additions,
-            "deletions": self.deletions,
-            "changes": self.additions + self.deletions
-        }
-
-
