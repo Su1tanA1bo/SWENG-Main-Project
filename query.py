@@ -25,7 +25,7 @@ def make_commit(name, sha, message, date, time, additions, deletions):
     }
 
 
-def run_query(owner, repo, auth):
+def run_query(owner, repo, branch, auth):
     
     headers = {
         "Authorization": "token " + auth,
@@ -36,8 +36,9 @@ def run_query(owner, repo, auth):
     end_cursor = None
 
     while has_next_page:
-        query = get_query(owner, repo, "graphql", end_cursor)
+        query = get_query(owner, repo, branch, end_cursor)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        # pprint(request.json())
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
 
         has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
@@ -51,52 +52,11 @@ def run_query(owner, repo, auth):
     return commit_list
 
 
-def get_query(repo, owner, branch, end_cursor):
-
-    after = ""
-    if end_cursor is not None:
-        after = f', after: "{end_cursor}"'
-
-    # The GraphQL query defined as a multi-line string.
-    query = """
-    {
-      repository(name: "%s", owner: "%s") {
-        ref(qualifiedName: "%s") {
-          target {
-            ... on Commit {
-              id
-              history(first: 100%s) {
-                pageInfo {
-                  hasNextPage
-                  endCursor
-                }
-                edges {
-                  node {
-                    oid
-                    message
-                    additions
-                    deletions
-                    author {
-                      name
-                      date
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    """ % (owner, repo, branch, after)
-    return query
-
-
 def commit_info(commit_list):
     user_list = {"universal": UserStats()}
     for commit in commit_list:
         name = commit["node"]["author"]["name"]
-        date = commit["node"]["author"]["date"]
+        date = commit["node"]["committedDate"]
         day = date[:10]
         time = date[11:-1]
 
@@ -113,6 +73,47 @@ def commit_info(commit_list):
         user_list["universal"].add(commit)
 
     print_stats(user_list)
+
+
+def get_query(repo, owner, branch, end_cursor):
+
+    after = ""
+    if end_cursor is not None:
+        after = f', after: "{end_cursor}"'
+
+    # The GraphQL query defined as a multi-line string.
+    query = """
+    {
+        repository(name: "%s", owner: "%s") {
+            ref(qualifiedName: "%s") {
+                target {
+                    ... on Commit {
+                        id
+                        history(first: 100%s) {
+                            pageInfo {
+                                hasNextPage
+                                endCursor
+                            }
+                            edges {
+                                node {
+                                    oid
+                                    message
+                                    committedDate
+                                    additions
+                                    deletions
+                                    author {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    """ % (owner, repo, branch, after)
+    return query
 
 
 def print_stats(user_list):
@@ -137,8 +138,9 @@ def print_stats(user_list):
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
+    branch = "api-calls"
     auth = "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"
 
-    result = run_query(owner, repo, auth)  # Execute the query
+    result = run_query(owner, repo, branch, auth)  # Execute the query
     # pprint(result)
     commit_info(result)
