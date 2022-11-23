@@ -7,22 +7,10 @@
 ##*************************************************************************
 
 
+from commit import Commit
 from pprint import pprint
 from requests import post
 from user import UserStats
-
-
-def make_commit(name, sha, message, date, time, additions, deletions):
-    return {
-        "author": name,
-        "sha": sha,
-        "message": message,
-        "date": date,
-        "time": time,
-        "additions": additions,
-        "deletions": deletions,
-        "changes": additions + deletions
-    }
 
 
 def run_query(owner, repo, branch, auth):
@@ -64,13 +52,13 @@ def commit_info(commit_list):
         message = commit["node"]["message"]
         additions = commit["node"]["additions"]
         deletions = commit["node"]["deletions"]
-        commit = make_commit(name, sha, message, day, time, additions, deletions)
+        commit_object = Commit(name, sha, message, day, time, additions, deletions)
 
         if name in user_list:
-            user_list[name].add(commit)
+            user_list[name].add(commit_object)
         else:
-            user_list[name] = UserStats(commit)
-        user_list["universal"].add(commit)
+            user_list[name] = UserStats(commit_object)
+        user_list["universal"].add(commit_object)
 
     print_stats(user_list)
 
@@ -129,7 +117,7 @@ def print_stats(user_list):
               f"Average commit size: {user_list[name].avg_no_changes} changes")
 
         if name == "universal":
-            print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1]['author']}\n")
+            print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
         else:
             print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
         # user_list[name].print_commits()

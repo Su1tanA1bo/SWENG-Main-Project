@@ -7,6 +7,7 @@
 
 from pprint import pprint
 
+
 class UserStats:
     def __init__(self, commit=None):
 
@@ -47,7 +48,7 @@ class UserStats:
     def find_days_committed(self):
         days = set()
         for commit in self.commits:
-            days.add(commit["date"])
+            days.add(commit.date)
         return len(days)
 
     # update all the relevant fields for a user
@@ -71,37 +72,37 @@ class UserStats:
         # dict with date as key, number of commits as value
         commits_per_day = {}
         for commit in self.commits:
-            total_changes += commit["changes"]
-            total_additions += commit["additions"]
-            total_deletions += commit["deletions"]
+            total_changes += commit.changes
+            total_additions += commit.additions
+            total_deletions += commit.deletions
 
             # following ifs compare current commit with current biggest/smallest
-            if commit["changes"] > most_changes:
-                most_changes = commit["changes"]
+            if commit.changes > most_changes:
+                most_changes = commit.changes
                 self.most_changes = (most_changes, commit)
-            if commit["changes"] < least_changes:
-                least_changes = commit["changes"]
+            if commit.changes < least_changes:
+                least_changes = commit.changes
                 self.least_changes = (least_changes, commit)
 
-            if commit["additions"] > most_additions:
-                most_additions = commit["additions"]
+            if commit.additions > most_additions:
+                most_additions = commit.additions
                 self.most_additions = (most_additions, commit)
-            if commit["additions"] < least_additions:
-                least_additions = commit["additions"]
+            if commit.additions < least_additions:
+                least_additions = commit.additions
                 self.least_additions = (least_additions, commit)
 
-            if commit["deletions"] > most_deletions:
-                most_deletions = commit["deletions"]
+            if commit.deletions > most_deletions:
+                most_deletions = commit.deletions
                 self.most_deletions = (most_deletions, commit)
-            if commit["deletions"] < least_deletions:
-                least_deletions = commit["deletions"]
+            if commit.deletions < least_deletions:
+                least_deletions = commit.deletions
                 self.least_deletions = (least_deletions, commit)
 
             # counts commits in each day
-            if commit["date"] in commits_per_day:
-                commits_per_day[commit["date"]] += 1
+            if commit.date in commits_per_day:
+                commits_per_day[commit.date] += 1
             else:
-                commits_per_day[commit["date"]] = 1
+                commits_per_day[commit.date] = 1
 
         most_commits = 0
         least_commits = float('inf')
