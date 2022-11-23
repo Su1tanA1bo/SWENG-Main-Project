@@ -13,6 +13,11 @@ from requests import post
 from user import UserStats
 
 
+user_list = {"universal": UserStats()}
+file_names = []
+blames = {}
+
+
 def run_query(owner, repo, branch, auth):
     
     headers = {
@@ -26,8 +31,8 @@ def run_query(owner, repo, branch, auth):
     while has_next_page:
         query = get_query(owner, repo, branch, end_cursor)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        pprint(request.json())
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
-        pprint(trimmed_request)
 
         has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
         if has_next_page:
@@ -40,16 +45,46 @@ def run_query(owner, repo, branch, auth):
     return commit_list
 
 
+def query_last_commit(owner, repo, branch, auth):
+    global file_names
+    global blames
+
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+
+    # for name in file_names:
+    query = get_bl_query(owner, repo, branch)
+    request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+    # pprint(request.json())
+    trimmed_request = request.json()["data"]["repository"]["object"]["entries"]
+    pprint(trimmed_request)
+
+    if request.status_code == 200:
+        blames["name"] = trimmed_request
+    else:
+        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
+
 def commit_info(commit_list):
-    user_list = {"universal": UserStats()}
+    global user_list
+    global file_names
+
+    # gets file names in most recent commit
+    entries = commit_list[0]["node"]["tree"]["entries"]
+    for entry in entries:
+        file_names.append(entry["name"])
+
     for commit in commit_list:
         name = commit["node"]["author"]["name"]
+        sha = commit["node"]["oid"]
+        message = commit["node"]["message"]
+
         date = commit["node"]["committedDate"]
         day = date[:10]
         time = date[11:-1]
 
-        sha = commit["node"]["oid"]
-        message = commit["node"]["message"]
         additions = commit["node"]["additions"]
         deletions = commit["node"]["deletions"]
         commit_object = Commit(name, sha, message, day, time, additions, deletions)
@@ -60,23 +95,20 @@ def commit_info(commit_list):
             user_list[name] = UserStats(commit_object)
         user_list["universal"].add(commit_object)
 
-    print_stats(user_list)
 
+def get_query(repo, owner, branch, end_cursor=None):
 
-def get_query(repo, owner, branch, end_cursor):
-
-    after = ""
     if end_cursor is not None:
         after = f', after: "{end_cursor}"'
+    else:
+        after = ""
 
-    # The GraphQL query defined as a multi-line string.
     query = """
     {
         repository(name: "%s", owner: "%s") {
             ref(qualifiedName: "%s") {
                 target {
                     ... on Commit {
-                        id
                         history(first: 100%s) {
                             pageInfo {
                                 hasNextPage
@@ -97,17 +129,6 @@ def get_query(repo, owner, branch, end_cursor):
                                             name
                                         }
                                     }
-                                    blame(path: "requirements.txt") {
-                                        ranges {
-                                            commit {
-                                                author {
-                                                    name
-                                                }
-                                            }
-                                            startingLine
-                                            endingLine
-                                        }
-                                    }   
                                 }
                             }
                         }
@@ -117,10 +138,55 @@ def get_query(repo, owner, branch, end_cursor):
         }
     }
     """ % (owner, repo, branch, after)
+
     return query
 
 
-def print_stats(user_list):
+def get_bl_query(repo, owner, branch):
+
+    query = """
+    {
+        repository(name: "%s", owner: "%s") {
+            object(expression: "HEAD:") {
+                ... on Tree {
+                    entries {
+                        name
+                        object {
+                            ... on Blob {
+                                text
+                            }
+                            ... on Tree {
+                                entries {
+                                    name
+                                    object {
+                                        ... on Blob {
+                                            text
+                                        }
+                                        ... on Tree {
+                                            entries {
+                                                name
+                                                object {
+                                                    ... on Blob {
+                                                        text
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    """ % (owner, repo)
+
+    return query
+
+
+def print_stats():
     for name in user_list:
         user_list[name].resolve_stats()
 
@@ -139,12 +205,20 @@ def print_stats(user_list):
         # user_list[name].print_commits()
 
 
+def get_stats(owner, repo, branch, auth):
+    result = run_query(owner, repo, branch, auth)  # Execute the query
+    # pprint(result)
+
+    commit_info(result)
+    query_last_commit(owner, repo, branch, auth)
+
+    print_stats()
+
+
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
-    branch = "blame"
+    branch = "main"
     auth = "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"
 
-    result = run_query(owner, repo, branch, auth)  # Execute the query
-    # pprint(result)
-    commit_info(result)
+    get_stats(owner, repo, branch, auth)

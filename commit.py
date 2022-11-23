@@ -12,8 +12,10 @@ class Commit:
         self.author = name
         self.sha = sha
         self.message = message
+
         self.date = date
         self.time = time
+
         self.additions = additions
         self.deletions = deletions
         self.changes = additions + deletions
