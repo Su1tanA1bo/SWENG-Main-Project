@@ -8,6 +8,7 @@
 #   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
 
+
 from datetime import datetime
 from hashlib import md5
 from time import time
@@ -134,6 +135,3 @@ class Repository(db.Model):
         if(user.id == self.owner_id): return True
         return self.members.filter(
             repo_members.c.user_id == user.id).count() > 0
-
-
-
