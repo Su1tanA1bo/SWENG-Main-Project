@@ -155,3 +155,5 @@ class UserStats(db.Model):
         avg_freq = -1
         most_commits = -1
         least_commits = -1
+
+        #lists and dicts in the user.py need to become tables in models.py
