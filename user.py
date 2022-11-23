@@ -40,6 +40,9 @@ class UserStats:
         self.avg_no_deletions = -1
         self.avg_no_changes = -1
 
+        self.lines_in_latest_commit = -1
+        self.code_ownership = -1
+
     # add a commit to commits list
     def add(self, commit):
         self.commits.append(commit)
@@ -50,6 +53,14 @@ class UserStats:
         for commit in self.commits:
             days.add(commit.date)
         return len(days)
+
+    # function for adding number of lines written
+    def add_to_lines(self, lines):
+        self.lines_in_latest_commit += lines
+
+    # calculate percentage of code owner by this user
+    def calculate_code_ownership(self, total_lines):
+        self.code_ownership = (self.lines_in_latest_commit / total_lines) * 100
 
     # update all the relevant fields for a user
     def resolve_stats(self):

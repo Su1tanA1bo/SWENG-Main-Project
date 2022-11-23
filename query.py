@@ -83,10 +83,10 @@ def run_blame_query(owner, repo, branch, auth):
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["blame"]["ranges"]
         pprint(trimmed_request)
 
-        # if request.status_code == 200:
-        #     store_files(trimmed_request)
-        # else:
-        #     raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+        if request.status_code == 200:
+            assign_blame(trimmed_request)
+        else:
+            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
 
 def store_files(tree, path=""):
@@ -97,6 +97,19 @@ def store_files(tree, path=""):
             store_files(entry["object"]["entries"], path + entry["name"] + '/')
         else:
             latest_commit.add(FileContents(entry["name"], path, entry["object"]["text"]))
+
+
+def assign_blame(blame_list):
+    global latest_commit
+    global user_list
+
+    for blame in blame_list:
+        lines = blame["endingLine"] - blame["startingLine"] + 1
+        user_list[blame["commit"]["author"]["name"]].add_to_lines(lines)
+        user_list["universal"].add_to_lines(lines)
+
+    for name in user_list:
+        user_list[name].calculate_code_ownership(user_list["universal"].lines_in_latest_commit)
 
 
 def commit_info(commit_list):
@@ -153,7 +166,7 @@ def get_stats(owner, repo, branch, auth):
     # pprint(result)
 
     run_text_query(owner, repo, branch, auth)
-    # run_blame_query(owner, repo, branch, auth)
+    run_blame_query(owner, repo, branch, auth)
 
     print_stats()
 

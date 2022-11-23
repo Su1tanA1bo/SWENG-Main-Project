@@ -12,8 +12,6 @@ class LatestCommit:
         self.commit = None
         self.files = []
 
-
-
     def setCommit(self, commit):
         self.commit = commit
 
