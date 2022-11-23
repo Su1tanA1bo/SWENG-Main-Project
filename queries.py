@@ -6,8 +6,10 @@
 ##*************************************************************************
 
 
+# initial query to get all the commits in a branch
 def get_commit_query(repo, owner, branch, end_cursor=None):
 
+    # for pagination
     if end_cursor is not None:
         after = f', after: "{end_cursor}"'
     else:
@@ -47,9 +49,10 @@ def get_commit_query(repo, owner, branch, end_cursor=None):
     return query
 
 
+# query - pulls info from files nested up to four levels deep
+# gets the name and text contained in all files
 def get_text_query(repo, owner, branch):
 
-    # query - pulls info from files nested up to four levels deep
     query = """
     {
         repository(name: "%s", owner: "%s") {
@@ -110,23 +113,22 @@ def get_text_query(repo, owner, branch):
     return query
 
 
+# query for getting the blame info for every line in every file in the latest commit
 def get_blame_query(repo, owner, branch, path):
 
-    # query - pulls info from files nested up to four levels deep
     query = """
-        {
-            repository(name: "%s", owner: "%s") {
-                ref(qualifiedName: "%s") {
-                    target {
-                        ... on Commit {
-                            blame(path: "%s") {
-                                ranges {
-                                    startingLine
-                                    endingLine
-                                    commit {
-                                        author {
-                                            name
-                                        }
+    {
+        repository(name: "%s", owner: "%s") {
+            ref(qualifiedName: "%s") {
+                target {
+                    ... on Commit {
+                        blame(path: "%s") {
+                            ranges {
+                                startingLine
+                                endingLine
+                                commit {
+                                    author {
+                                        name
                                     }
                                 }
                             }
@@ -135,6 +137,7 @@ def get_blame_query(repo, owner, branch, path):
                 }
             }
         }
-        """ % (owner, repo, branch, path)
+    }
+    """ % (owner, repo, branch, path)
 
     return query
