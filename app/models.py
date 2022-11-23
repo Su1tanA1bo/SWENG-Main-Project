@@ -162,10 +162,10 @@ class UserStats(db.Model):
         else:
             self.commits = [commit]
         ##init all the values from UserStats original here
-        days_committed = -1
-        avg_freq = -1
-        most_commits = -1
-        least_commits = -1
+        self.days_committed = -1
+        self.avg_freq = -1
+        self.most_commits = -1
+        self.least_commits = -1
 
         avg_no_additions = -1
         avg_no_deletions = -1
