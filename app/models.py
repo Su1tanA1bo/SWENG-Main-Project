@@ -135,3 +135,23 @@ class Repository(db.Model):
         if(user.id == self.owner_id): return True
         return self.members.filter(
             repo_members.c.user_id == user.id).count() > 0
+
+
+#class for UserStats in the database
+class UserStats(db.Model):
+    days_committed = db.Column(db.Integer)
+    avg_freq = db.Column(db.Integer)
+    most_commits = db.Column(db.Integer)
+    least_commits = db.Column(db.Integer)
+
+    #func for initing new object in db
+    def __init__(self):
+        if commit is None:
+            self.commits = []
+        else:
+            self.commits = [commit]
+        ##init all the values from UserStats original here
+        days_committed = -1
+        avg_freq = -1
+        most_commits = -1
+        least_commits = -1
