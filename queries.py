@@ -47,40 +47,48 @@ def get_commit_query(repo, owner, branch, end_cursor=None):
     return query
 
 
-def get_text_query(repo, owner):
+def get_text_query(repo, owner, branch):
 
     # query - pulls info from files nested up to four levels deep
     query = """
     {
         repository(name: "%s", owner: "%s") {
-            object(expression: "HEAD:") {
-                ... on Tree {
-                    entries {
-                        name
-                        object {
-                            ... on Blob {
-                                text
-                            }
-                            ... on Tree {
-                                entries {
-                                    name
-                                    object {
-                                        ... on Blob {
-                                            text
-                                        }
-                                        ... on Tree {
-                                            entries {
-                                                name
-                                                object {
-                                                    ... on Blob {
-                                                        text
-                                                    }
-                                                    ... on Tree {
-                                                        entries {
-                                                            name
-                                                            object {
-                                                                ... on Blob {
-                                                                    text
+            ref(qualifiedName: "%s") {
+                target {
+                    ... on Commit {
+                        history(first: 1) {
+                            nodes {
+                                tree {
+                                    entries {
+                                        name
+                                        object {
+                                            ... on Blob {
+                                                text
+                                            }
+                                            ... on Tree {
+                                                entries {
+                                                    name
+                                                    object {
+                                                        ... on Blob {
+                                                            text
+                                                        }
+                                                        ... on Tree {
+                                                            entries {
+                                                                name
+                                                                object {
+                                                                    ... on Blob {
+                                                                        text
+                                                                    }
+                                                                    ... on Tree {
+                                                                        entries {
+                                                                            name
+                                                                            object {
+                                                                                ... on Blob {
+                                                                                    text
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -97,7 +105,7 @@ def get_text_query(repo, owner):
             }
         }
     }
-    """ % (owner, repo)
+    """ % (owner, repo, branch)
 
     return query
 

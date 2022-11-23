@@ -8,12 +8,11 @@
 
 class LatestCommit:
 
-    def __init__(self, commit=None, file=None):
-        self.commit = commit
-        if file is not None:
-            self.files = [file]
-        else:
-            self.files = []
+    def __init__(self):
+        self.commit = None
+        self.files = []
+
+
 
     def setCommit(self, commit):
         self.commit = commit

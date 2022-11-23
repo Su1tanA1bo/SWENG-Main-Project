@@ -48,8 +48,7 @@ def run_commit_query(owner, repo, branch, auth):
     return commit_list
 
 
-def run_text_query(owner, repo, auth):
-    global file_names
+def run_text_query(owner, repo, branch, auth):
     global blames
 
     headers = {
@@ -57,10 +56,10 @@ def run_text_query(owner, repo, auth):
         "Accept": "application/vnd.github+json",
     }
 
-    query = get_text_query(owner, repo)
+    query = get_text_query(owner, repo, branch)
     request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
     # pprint(request.json())
-    trimmed_request = request.json()["data"]["repository"]["object"]["entries"]
+    trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]["nodes"][0]["tree"]["entries"]
     # pprint(trimmed_request)
 
     if request.status_code == 200:
@@ -153,8 +152,8 @@ def get_stats(owner, repo, branch, auth):
     commit_info(result)
     # pprint(result)
 
-    run_text_query(owner, repo, auth)
-    run_blame_query(owner, repo, branch, auth)
+    run_text_query(owner, repo, branch, auth)
+    # run_blame_query(owner, repo, branch, auth)
 
     print_stats()
 
@@ -162,7 +161,7 @@ def get_stats(owner, repo, branch, auth):
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
-    branch = "main"
+    branch = "dev"
     auth = "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"
 
     get_stats(owner, repo, branch, auth)
