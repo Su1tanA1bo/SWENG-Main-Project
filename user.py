@@ -11,16 +11,23 @@ from pprint import pprint
 class UserStats:
 
     def __init__(self, commit=None):
+
+        # list of commits - if has init parameter, initialised with
         if commit is None:
             self.commits = []
         else:
             self.commits = [commit]
 
+        # number of days code was committed
         self.days_committed = None
+        # average frequency of commits each day that a commit was made
         self.avg_freq = -1
+        # highest and lowest number of commits in one day
         self.most_commits = -1
         self.least_commits = -1
 
+        # most and least additions/deletions/changes
+        # tuple containing int and a dict representing the commit
         self.most_additions = (-1, None)
         self.least_additions = (-1, None)
         self.most_deletions = (-1, None)
@@ -28,19 +35,24 @@ class UserStats:
         self.most_changes = (-1, None)
         self.least_changes = (-1, None)
 
+        # average number of additions/deletions/changes
+        # total commits / days committed
         self.avg_no_additions = -1
         self.avg_no_deletions = -1
         self.avg_no_changes = -1
 
+    # add a commit to commits list
     def add(self, commit):
         self.commits.append(commit)
 
+    # finds the number of days that a user committed on
     def find_days_committed(self):
         days = set()
         for commit in self.commits:
             days.add(commit["date"])
         return len(days)
 
+    # update all the relevant fields for a user
     def resolve_stats(self):
         self.days_committed = self.find_days_committed()
         self.avg_freq = round(len(self.commits) / self.days_committed)
@@ -58,12 +70,14 @@ class UserStats:
         total_additions = 0
         total_deletions = 0
 
+        # dict with date as key, number of commits as value
         commits_per_day = {}
         for commit in self.commits:
             total_changes += commit["changes"]
             total_additions += commit["additions"]
             total_deletions += commit["deletions"]
 
+            # following ifs compare current commit with current biggest/smallest
             if commit["changes"] > most_changes:
                 most_changes = commit["changes"]
                 self.most_changes = (most_changes, commit)
@@ -85,6 +99,7 @@ class UserStats:
                 least_deletions = commit["deletions"]
                 self.least_deletions = (least_deletions, commit)
 
+            # counts commits in each day
             if commit["date"] in commits_per_day:
                 commits_per_day[commit["date"]] += 1
             else:
@@ -93,6 +108,7 @@ class UserStats:
         most_commits = 0
         least_commits = float('inf')
 
+        # finds the days with the most and least commits
         for day in commits_per_day:
             if commits_per_day[day] > most_commits:
                 most_commits = commits_per_day[day]
@@ -101,13 +117,16 @@ class UserStats:
                 least_commits = commits_per_day[day]
                 self.least_commits = (day, least_commits)
 
+        # gets averages
         self.avg_no_changes = round(total_changes / len(self.commits))
         self.avg_no_additions = round(total_additions / len(self.commits))
         self.avg_no_deletions = round(total_deletions / len(self.commits))
 
+    # getter for total number of commits
     def total_commits(self):
         return len(self.commits)
 
+    # pretty prints the list of commits
     def print_commits(self):
         pprint(self.commits)
         print("\n")
