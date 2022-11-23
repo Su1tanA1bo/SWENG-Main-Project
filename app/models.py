@@ -174,3 +174,45 @@ class UserStats(db.Model):
         self.avg_no_changes = -1
 
         #lists and dicts in the user.py need to become tables in models.py
+
+
+#Class for commit in database. Works as a tuple in practie, as tuples cannot be stored in db naturally
+class Commit(db.Model):
+    author = db.Column(db.String(140), index=True)
+    sha = db.Column(db.String(140), index=True, unique=True, primary_key=True)
+    message = db.Column(db.String(140), index=True)
+    date = db.Column(db.String(10))
+    time = db.Column(db.String(12))
+    additions = db.Column(db.Integer)
+    deletions = db.Column(db.Integer)
+    changes = db.Column(db.Integer)
+
+
+    def __init__(self, name, sha, message, date, time, additions, deletions):
+        self.author = name
+        self.sha = sha
+        self.message = message
+        self.date = date
+        self.time = time
+        self.additions = additions
+        self.deletions = deletions
+        self.changes = additions + deletions
+
+    def to_dict(self):
+        return {
+            "author": self.author,
+            "sha": self.sha,
+            "message": self.message,
+            "date": self.date,
+            "time": self.time,
+            "additions": self.additions,
+            "deletions": self.deletions,
+            "changes": self.additions + self.deletions
+        }
+
+    def __repr__(self):
+        return f"Author: {self.author}\n" \
+               f"Message: {self.message}\n" \
+               f"Sha: {self.sha}\n" \
+               f"Additions: {self.additions}\n" \
+               f"Deletions: {self.deletions}"
