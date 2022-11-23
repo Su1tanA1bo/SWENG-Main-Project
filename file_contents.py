@@ -10,8 +10,9 @@ from pathlib import Path
 
 class FileContents:
 
-    def __init__(self, name, contents):
+    def __init__(self, name, path, contents):
         self.name = name
+        self.path = path + name
         self.contents = contents
         self.extension = Path(name).suffix
 

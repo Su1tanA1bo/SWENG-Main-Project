@@ -34,11 +34,6 @@ def get_commit_query(repo, owner, branch, end_cursor=None):
                                     author {
                                         name
                                     }
-                                    tree {
-                                        entries{
-                                            name
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -107,7 +102,7 @@ def get_text_query(repo, owner):
     return query
 
 
-def get_blame_query(repo, owner, branch):
+def get_blame_query(repo, owner, branch, path):
 
     # query - pulls info from files nested up to four levels deep
     query = """
@@ -117,10 +112,14 @@ def get_blame_query(repo, owner, branch):
                     target {
                         ... on Commit {
                             blame(path: "%s") {
-                                startingLine
-                                endingLine
-                                commit {
-                                    author
+                                ranges {
+                                    startingLine
+                                    endingLine
+                                    commit {
+                                        author {
+                                            name
+                                        }
+                                    }
                                 }
                             }
                         }

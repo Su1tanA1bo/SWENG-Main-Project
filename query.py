@@ -17,7 +17,6 @@ from user import UserStats
 
 
 user_list = {"universal": UserStats()}
-file_names = []
 blames = {}
 latest_commit = LatestCommit()
 
@@ -70,8 +69,7 @@ def run_text_query(owner, repo, auth):
         raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
 
-def run_blame_query(owner, repo, auth):
-    global file_names
+def run_blame_query(owner, repo, branch, auth):
     global blames
 
     headers = {
@@ -79,36 +77,31 @@ def run_blame_query(owner, repo, auth):
         "Accept": "application/vnd.github+json",
     }
 
-    query = get_text_query(owner, repo)
-    request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-    # pprint(request.json())
-    trimmed_request = request.json()["data"]["repository"]["object"]["entries"]
-    # pprint(trimmed_request)
+    for file in latest_commit.files:
+        query = get_blame_query(owner, repo, branch, file.path)
+        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        # pprint(request.json())
+        trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["blame"]["ranges"]
+        pprint(trimmed_request)
 
-    if request.status_code == 200:
-        store_files(trimmed_request)
-    else:
-        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+        # if request.status_code == 200:
+        #     store_files(trimmed_request)
+        # else:
+        #     raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
 
-def store_files(tree):
+def store_files(tree, path=""):
     global latest_commit
 
     for entry in tree:
         if "text" not in entry["object"]:
-            store_files(entry["object"]["entries"])
+            store_files(entry["object"]["entries"], path + entry["name"] + '/')
         else:
-            latest_commit.add(FileContents(entry["name"], entry["object"]["text"]))
+            latest_commit.add(FileContents(entry["name"], path, entry["object"]["text"]))
 
 
 def commit_info(commit_list):
     global user_list
-    global file_names
-
-    # gets file names in most recent commit
-    entries = commit_list[0]["node"]["tree"]["entries"]
-    for entry in entries:
-        file_names.append(entry["name"])
 
     for commit in commit_list:
         name = commit["node"]["author"]["name"]
@@ -151,6 +144,7 @@ def print_stats():
     print("\nFiles:\n")
     for file in latest_commit.files:
         print(f"Name: {file.name}\n"
+              f"Path: {file.path}\n"
               f"Contents:\n{file.contents}\n")
 
 
@@ -160,7 +154,7 @@ def get_stats(owner, repo, branch, auth):
     # pprint(result)
 
     run_text_query(owner, repo, auth)
-    run_blame_query(owner, repo, auth)
+    run_blame_query(owner, repo, branch, auth)
 
     print_stats()
 
