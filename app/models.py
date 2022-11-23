@@ -144,6 +144,8 @@ class UserStats(db.Model):
     most_commits = db.Column(db.Integer)
     least_commits = db.Column(db.Integer)
 
+    # most and least additions/deletions/changes
+    # tuple containing int and a dict representing the commit
     most_additions = (-1, None)
     least_additions = (-1, None)
     most_deletions = (-1, None)
