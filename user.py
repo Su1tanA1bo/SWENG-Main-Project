@@ -7,9 +7,7 @@
 
 from pprint import pprint
 
-
 class UserStats:
-
     def __init__(self, commit=None):
 
         # list of commits - if has init parameter, initialised with
