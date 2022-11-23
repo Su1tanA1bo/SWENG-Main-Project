@@ -9,7 +9,6 @@
 
 from commit import Commit
 from file_contents import FileContents
-from latest_commit import LatestCommit
 from pprint import pprint
 from queries import *
 from requests import post
@@ -18,7 +17,7 @@ from user import UserStats
 
 user_list = {"universal": UserStats()}
 blames = {}
-latest_commit = LatestCommit()
+latest_commit = []
 
 
 def run_commit_query(owner, repo, branch, auth):
@@ -76,7 +75,7 @@ def run_blame_query(owner, repo, branch, auth):
         "Accept": "application/vnd.github+json",
     }
 
-    for file in latest_commit.files:
+    for file in latest_commit:
         query = get_blame_query(owner, repo, branch, file.path)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
         # pprint(request.json())
@@ -96,7 +95,7 @@ def store_files(tree, path=""):
         if "text" not in entry["object"]:
             store_files(entry["object"]["entries"], path + entry["name"] + '/')
         else:
-            latest_commit.add(FileContents(entry["name"], path, entry["object"]["text"]))
+            latest_commit.append(FileContents(entry["name"], path, entry["object"]["text"]))
 
 
 def assign_blame(blame_list):
@@ -109,7 +108,7 @@ def assign_blame(blame_list):
         user_list["universal"].add_to_lines(lines)
 
     for name in user_list:
-        user_list[name].calculate_code_ownership(user_list["universal"].lines_in_latest_commit)
+        user_list[name].calculate_code_ownership(user_list["universal"].lines_written)
 
 
 def commit_info(commit_list):
@@ -137,7 +136,7 @@ def commit_info(commit_list):
 
 def print_stats():
     print("\nFiles:\n")
-    for file in latest_commit.files:
+    for file in latest_commit:
         print(f"Name: {file.name}\n"
               f"Path: {file.path}\n"
               f"Contents:\n{file.contents}\n")
@@ -153,7 +152,7 @@ def print_stats():
               f"Least commits: {user_list[name].least_commits[1]} on {user_list[name].least_commits[0]}\n"
               f"Average frequency: {user_list[name].avg_freq} commits per day\n"
               f"Average commit size: {user_list[name].avg_no_changes} changes\n"
-              f"Lines written: {user_list[name].lines_in_latest_commit}\n"
+              f"Lines written: {user_list[name].lines_written}\n"
               f"Percentage ownership: {user_list[name].code_ownership}%")
 
         if name == "universal":
