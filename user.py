@@ -60,7 +60,7 @@ class UserStats:
 
     # calculate percentage of code owner by this user
     def calculate_code_ownership(self, total_lines):
-        self.code_ownership = (self.lines_in_latest_commit / total_lines) * 100
+        self.code_ownership = round((self.lines_in_latest_commit / total_lines) * 100, 3)
 
     # update all the relevant fields for a user
     def resolve_stats(self):

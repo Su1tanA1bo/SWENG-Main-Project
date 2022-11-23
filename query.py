@@ -136,6 +136,13 @@ def commit_info(commit_list):
 
 
 def print_stats():
+    print("\nFiles:\n")
+    for file in latest_commit.files:
+        print(f"Name: {file.name}\n"
+              f"Path: {file.path}\n"
+              f"Contents:\n{file.contents}\n")
+
+    print("\nUsers:\n")
     for name in user_list:
         user_list[name].resolve_stats()
 
@@ -145,19 +152,15 @@ def print_stats():
               f"Most commits: {user_list[name].most_commits[1]} on {user_list[name].most_commits[0]}\n"
               f"Least commits: {user_list[name].least_commits[1]} on {user_list[name].least_commits[0]}\n"
               f"Average frequency: {user_list[name].avg_freq} commits per day\n"
-              f"Average commit size: {user_list[name].avg_no_changes} changes")
+              f"Average commit size: {user_list[name].avg_no_changes} changes\n"
+              f"Lines written: {user_list[name].lines_in_latest_commit}\n"
+              f"Percentage ownership: {user_list[name].code_ownership}%")
 
         if name == "universal":
             print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
         else:
             print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
         # user_list[name].print_commits()
-
-    print("\nFiles:\n")
-    for file in latest_commit.files:
-        print(f"Name: {file.name}\n"
-              f"Path: {file.path}\n"
-              f"Contents:\n{file.contents}\n")
 
 
 def get_stats(owner, repo, branch, auth):
@@ -174,7 +177,7 @@ def get_stats(owner, repo, branch, auth):
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
-    branch = "dev"
+    branch = "extend-api"
     auth = "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"
 
     get_stats(owner, repo, branch, auth)
