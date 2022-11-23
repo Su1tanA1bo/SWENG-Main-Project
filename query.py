@@ -26,8 +26,8 @@ def run_query(owner, repo, branch, auth):
     while has_next_page:
         query = get_query(owner, repo, branch, end_cursor)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-        # pprint(request.json())
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
+        pprint(trimmed_request)
 
         has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
         if has_next_page:
@@ -92,6 +92,22 @@ def get_query(repo, owner, branch, end_cursor):
                                     author {
                                         name
                                     }
+                                    tree {
+                                        entries{
+                                            name
+                                        }
+                                    }
+                                    blame(path: "requirements.txt") {
+                                        ranges {
+                                            commit {
+                                                author {
+                                                    name
+                                                }
+                                            }
+                                            startingLine
+                                            endingLine
+                                        }
+                                    }   
                                 }
                             }
                         }
@@ -126,7 +142,7 @@ def print_stats(user_list):
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
-    branch = "api-calls"
+    branch = "blame"
     auth = "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"
 
     result = run_query(owner, repo, branch, auth)  # Execute the query
