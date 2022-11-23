@@ -8,14 +8,18 @@
 
 
 from commit import Commit
+from file_contents import FileContents
+from latest_commit import LatestCommit
 from pprint import pprint
 from requests import post
 from user import UserStats
+import pathlib
 
 
 user_list = {"universal": UserStats()}
 file_names = []
 blames = {}
+latest_commit = LatestCommit()
 
 
 def run_query(owner, repo, branch, auth):
@@ -31,7 +35,7 @@ def run_query(owner, repo, branch, auth):
     while has_next_page:
         query = get_query(owner, repo, branch, end_cursor)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-        pprint(request.json())
+        # pprint(request.json())
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
 
         has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
@@ -45,7 +49,7 @@ def run_query(owner, repo, branch, auth):
     return commit_list
 
 
-def query_last_commit(owner, repo, branch, auth):
+def query_last_commit(owner, repo, auth):
     global file_names
     global blames
 
@@ -55,16 +59,28 @@ def query_last_commit(owner, repo, branch, auth):
     }
 
     # for name in file_names:
-    query = get_bl_query(owner, repo, branch)
+    query = get_bl_query(owner, repo)
     request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
     # pprint(request.json())
     trimmed_request = request.json()["data"]["repository"]["object"]["entries"]
-    pprint(trimmed_request)
+    # pprint(trimmed_request)
 
     if request.status_code == 200:
         blames["name"] = trimmed_request
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
+    store_files(trimmed_request)
+
+
+def store_files(tree):
+    global latest_commit
+
+    for entry in tree:
+        if "text" not in entry["object"]:
+            store_files(entry["object"]["entries"])
+        else:
+            latest_commit.add(FileContents(entry["name"], entry["object"]["text"]))
 
 
 def commit_info(commit_list):
@@ -142,7 +158,7 @@ def get_query(repo, owner, branch, end_cursor=None):
     return query
 
 
-def get_bl_query(repo, owner, branch):
+def get_bl_query(repo, owner):
 
     query = """
     {
@@ -204,13 +220,18 @@ def print_stats():
             print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
         # user_list[name].print_commits()
 
+    print("\nFiles:\n")
+    for file in latest_commit.files:
+        print(f"Name: {file.name}\n"
+              f"Contents: {file.contents}\n\n")
+
 
 def get_stats(owner, repo, branch, auth):
     result = run_query(owner, repo, branch, auth)  # Execute the query
     # pprint(result)
 
     commit_info(result)
-    query_last_commit(owner, repo, branch, auth)
+    query_last_commit(owner, repo, auth)
 
     print_stats()
 
