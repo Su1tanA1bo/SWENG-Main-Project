@@ -167,9 +167,9 @@ class UserStats(db.Model):
         self.most_commits = -1
         self.least_commits = -1
 
-        avg_no_additions = -1
-        avg_no_deletions = -1
-        avg_no_changes = -1
+        self.avg_no_additions = -1
+        self.avg_no_deletions = -1
+        self.avg_no_changes = -1
 
         #lists and dicts in the user.py need to become tables in models.py
 
