@@ -11,9 +11,9 @@ from commit import Commit
 from file_contents import FileContents
 from latest_commit import LatestCommit
 from pprint import pprint
+from queries import *
 from requests import post
 from user import UserStats
-import pathlib
 
 
 user_list = {"universal": UserStats()}
@@ -22,7 +22,7 @@ blames = {}
 latest_commit = LatestCommit()
 
 
-def run_query(owner, repo, branch, auth):
+def run_commit_query(owner, repo, branch, auth):
     
     headers = {
         "Authorization": "token " + auth,
@@ -33,7 +33,7 @@ def run_query(owner, repo, branch, auth):
     end_cursor = None
 
     while has_next_page:
-        query = get_query(owner, repo, branch, end_cursor)
+        query = get_commit_query(owner, repo, branch, end_cursor)
         request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
         # pprint(request.json())
         trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
@@ -49,7 +49,7 @@ def run_query(owner, repo, branch, auth):
     return commit_list
 
 
-def query_last_commit(owner, repo, auth):
+def run_text_query(owner, repo, auth):
     global file_names
     global blames
 
@@ -58,19 +58,37 @@ def query_last_commit(owner, repo, auth):
         "Accept": "application/vnd.github+json",
     }
 
-    # for name in file_names:
-    query = get_bl_query(owner, repo)
+    query = get_text_query(owner, repo)
     request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
     # pprint(request.json())
     trimmed_request = request.json()["data"]["repository"]["object"]["entries"]
     # pprint(trimmed_request)
 
     if request.status_code == 200:
-        blames["name"] = trimmed_request
+        store_files(trimmed_request)
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
-    store_files(trimmed_request)
+
+def run_blame_query(owner, repo, auth):
+    global file_names
+    global blames
+
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+
+    query = get_text_query(owner, repo)
+    request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+    # pprint(request.json())
+    trimmed_request = request.json()["data"]["repository"]["object"]["entries"]
+    # pprint(trimmed_request)
+
+    if request.status_code == 200:
+        store_files(trimmed_request)
+    else:
+        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
 
 def store_files(tree):
@@ -112,96 +130,6 @@ def commit_info(commit_list):
         user_list["universal"].add(commit_object)
 
 
-def get_query(repo, owner, branch, end_cursor=None):
-
-    if end_cursor is not None:
-        after = f', after: "{end_cursor}"'
-    else:
-        after = ""
-
-    query = """
-    {
-        repository(name: "%s", owner: "%s") {
-            ref(qualifiedName: "%s") {
-                target {
-                    ... on Commit {
-                        history(first: 100%s) {
-                            pageInfo {
-                                hasNextPage
-                                endCursor
-                            }
-                            edges {
-                                node {
-                                    oid
-                                    message
-                                    committedDate
-                                    additions
-                                    deletions
-                                    author {
-                                        name
-                                    }
-                                    tree {
-                                        entries{
-                                            name
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    """ % (owner, repo, branch, after)
-
-    return query
-
-
-def get_bl_query(repo, owner):
-
-    query = """
-    {
-        repository(name: "%s", owner: "%s") {
-            object(expression: "HEAD:") {
-                ... on Tree {
-                    entries {
-                        name
-                        object {
-                            ... on Blob {
-                                text
-                            }
-                            ... on Tree {
-                                entries {
-                                    name
-                                    object {
-                                        ... on Blob {
-                                            text
-                                        }
-                                        ... on Tree {
-                                            entries {
-                                                name
-                                                object {
-                                                    ... on Blob {
-                                                        text
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    """ % (owner, repo)
-
-    return query
-
-
 def print_stats():
     for name in user_list:
         user_list[name].resolve_stats()
@@ -223,15 +151,16 @@ def print_stats():
     print("\nFiles:\n")
     for file in latest_commit.files:
         print(f"Name: {file.name}\n"
-              f"Contents: {file.contents}\n\n")
+              f"Contents:\n{file.contents}\n")
 
 
 def get_stats(owner, repo, branch, auth):
-    result = run_query(owner, repo, branch, auth)  # Execute the query
+    result = run_commit_query(owner, repo, branch, auth)  # Execute the query
+    commit_info(result)
     # pprint(result)
 
-    commit_info(result)
-    query_last_commit(owner, repo, auth)
+    run_text_query(owner, repo, auth)
+    run_blame_query(owner, repo, auth)
 
     print_stats()
 
