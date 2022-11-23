@@ -3,7 +3,7 @@
 #
 #   @author	 Indigo Bosworth
 #   @Creation Date: 15/11/2022
-#         
+#
 #   @Primary credit for code basis goes to:
 #   https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ##*************************************************************************
@@ -50,7 +50,7 @@ class User(UserMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
-    
+
     #Methods for allowing users to change their following relationships with other users
     def follow(self, user):
         if not self.is_following(user):
@@ -82,7 +82,7 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
-        
+
 #Class for posts in database.
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,10 +116,10 @@ class Repository(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
-    members = db.relationship('User', secondary=repo_members, 
-            backref=db.backref('repos', lazy='dynamic'), 
+    members = db.relationship('User', secondary=repo_members,
+            backref=db.backref('repos', lazy='dynamic'),
             lazy='dynamic')
-    
+
     #Methods for allowing users to change their member relationships with repos
     def add_to(self, user):
         if not self.is_member(user.username):
@@ -144,8 +144,19 @@ class UserStats(db.Model):
     most_commits = db.Column(db.Integer)
     least_commits = db.Column(db.Integer)
 
+    most_additions = (-1, None)
+    least_additions = (-1, None)
+    most_deletions = (-1, None)
+    least_deletions = (-1, None)
+    most_changes = (-1, None)
+    least_changes = (-1, None)
+
+    avg_no_additions = db.Column(db.Integer)
+    avg_no_deletions = db.Column(db.Integer)
+    avg_no_changes = db.Column(db.Integer)
+
     #func for initing new object in db
-    def __init__(self):
+    def __init__(self, commit = None):
         if commit is None:
             self.commits = []
         else:
@@ -155,5 +166,9 @@ class UserStats(db.Model):
         avg_freq = -1
         most_commits = -1
         least_commits = -1
+
+        avg_no_additions = -1
+        avg_no_deletions = -1
+        avg_no_changes = -1
 
         #lists and dicts in the user.py need to become tables in models.py

@@ -7,9 +7,7 @@
 
 from pprint import pprint
 
-
 class UserStats:
-
     def __init__(self, commit=None):
         if commit is None:
             self.commits = []
