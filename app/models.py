@@ -147,12 +147,14 @@ class UserStats(db.Model):
 
     # most and least additions/deletions/changes
     # tuple containing int and a dict representing the commit
-    most_additions = Commit(most_additions)
-    least_additions = Commit(least_additions)
-    most_deletions = Commit(most_deletions)
-    least_deletions = Commit(least_deletions)
-    most_changes = Commit(most_changes)
-    least_changes = Commit(least_changes)
+    # these tuples are referred to by their sha as an identifier
+    # for a flask db one to one relationship
+    most_additions = db.Column(db.Integer, db.ForeignKey('commit.sha'))
+    least_additions = db.Column(db.Integer, db.ForeignKey('commit.sha'))
+    most_deletions = db.Column(db.Integer, db.ForeignKey('commit.sha'))
+    least_deletions = db.Column(db.Integer, db.ForeignKey('commit.sha'))
+    most_changes = db.Column(db.Integer, db.ForeignKey('commit.sha'))
+    least_changes = db.Column(db.Integer, db.ForeignKey('commit.sha'))
 
     avg_no_additions = db.Column(db.Integer)
     avg_no_deletions = db.Column(db.Integer)
