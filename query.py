@@ -12,6 +12,7 @@ from file_contents import FileContents
 from queries import *
 from requests import post
 from user import UserStats
+from radon.visitors import ComplexityVisitor
 
 
 user_list = {"universal": UserStats()}
@@ -209,3 +210,14 @@ if __name__ == '__main__':
     print(f"Gathering data from {repo}, branch {branch}...")
     get_stats(owner, repo, branch, auth)
     print_stats()
+    number_of_files_scanned = 0
+    total_complexity_score = 0
+    v = ComplexityVisitor
+    for file in latest_commit:
+        print("name: "+str(file.name))
+        print("extension: "+str(file.extension))
+        if str(file.extension) == ".py":
+             v.from_code(file.contents)
+             print(v.complexity)
+    
+        
