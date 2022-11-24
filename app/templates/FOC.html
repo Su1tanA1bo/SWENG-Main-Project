@@ -8,20 +8,35 @@
    <meta charset="utf-8">
  </head>
  <body>
- <a href="/User1">User1</a>
- <a href="/User1">User2</a>
- <a href="/User1">User3</a>
+    <p>{{users}}</p>
    <div>
      <canvas id="myChart" width="900" height="400"></canvas>
    </div>
+   <div>
+    <canvas id="myChart2" width="900" height="400"></canvas>
+  </div>
+  <div>
+    <canvas id="myChart3" width="900" height="400"></canvas>
+  </div>
+  <meta name = "test" content = "{{users}}">
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
   const ctx = document.getElementById('myChart');
+  const gtx = document.getElementById('myChart2');
+  const ftx = document.getElementById('myChart3');
+
+  var data1 = document.getElementsByName('test')[0].content;
+  let result = data1.replace("'", '"');
+
+  console.log(result);
+
+  const vars = JSON.parse(result);
 
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['User-1', 'User-2', 'User-3', 'User-4', 'User-5', 'User-6'],
+      labels: vars.userID,
       datasets: [{
         label: '# of Votes',
         data: [12, 19, 3, 5, 2, 3],
@@ -29,7 +44,35 @@
       }]
     },
     options: {
-      responsive: false
+      responsive: true
+    }
+  });
+  new Chart(gtx, {
+    type: 'bar',
+    data: {
+      labels: ['User-test', 'User-2', 'User-3', 'User-4', 'User-5', 'User-6'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+  new Chart(ftx, {
+    type: 'bar',
+    data: {
+      labels: ['User-test', 'User-2', 'User-3', 'User-4', 'User-5', 'User-6'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
     }
   });
 </script>

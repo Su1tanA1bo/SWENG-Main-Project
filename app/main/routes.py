@@ -18,6 +18,7 @@ from app import db
 from app.main.forms import EditProfileForm, EmptyForm, PostForm
 from app.models import User, Post
 from app.main import bp
+import json
 
 #function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
@@ -67,10 +68,14 @@ def user(username):
     form = EmptyForm()
     return render_template('user.html', user=user, )
 
+#import JSON file for loading into HTML
+with open("Data.json") as stud:
+    inputData = json.load(stud)
+
 @bp.route('/FOC')
 @login_required
 def FOC():
- return render_template("FOC.html")
+ return render_template("FOC.html", users=inputData)
 
 @bp.route('/SOC')
 @login_required
