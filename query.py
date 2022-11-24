@@ -196,7 +196,7 @@ def get_stats(owner, repo, branch, auth):
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
-    branch = "extend-api"
+    branch = "api-calls"
     auth = "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"
 
     print(f"Gathering data from {repo}, branch {branch}...")
