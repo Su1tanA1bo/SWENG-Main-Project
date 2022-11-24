@@ -8,119 +8,163 @@
 
 
 from commit import Commit
+from file_contents import FileContents
 from pprint import pprint
+from queries import *
 from requests import post
 from user import UserStats
 
 
-def run_query(owner, repo, branch, auth):
-    
+user_list = {"universal": UserStats()}
+latest_commit = []
+
+
+# first api call - gets a list of commits and information about them
+def run_commit_query(owner, repo, branch, auth):
+    # stores the authorisation token and accept
     headers = {
         "Authorization": "token " + auth,
         "Accept": "application/vnd.github+json",
     }
-    has_next_page = True
+
+    # stores the list of commits
     commit_list = []
+    # for pagination
+    has_next_page = True
     end_cursor = None
 
+    # query can only fetch 100 commits, so keeps fetching until all commits fetched
     while has_next_page:
-        query = get_query(owner, repo, branch, end_cursor)
-        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-        trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
-        pprint(trimmed_request)
 
+        # gets the query and performs call, on subsequent call passes in end_cursor for pagination
+        query = get_commit_query(owner, repo, branch, end_cursor)
+        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        # trims the result of the api call to remove unnecessary nesting
+        trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]
+
+        # determines if all commits have been fetched
         has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
         if has_next_page:
             end_cursor = trimmed_request["pageInfo"]["endCursor"]
 
+        # if api call was successful, adds the commits to the commit list
         if request.status_code == 200:
             commit_list += trimmed_request["edges"]
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
-    return commit_list
+    # processes list of commits
+    commit_info(commit_list)
 
 
+# second api call - text from every file in latest commit
+def run_text_query(owner, repo, branch, auth):
+    # stores the authorisation token and accept
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+
+    # gets the query and performs call
+    query = get_text_query(owner, repo, branch)
+    request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+    # trims the result of the api call to remove unnecessary nesting
+    trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["history"]["nodes"][0]["tree"]["entries"]
+
+    # if api call was successful, calls function to process the result into file objects
+    if request.status_code == 200:
+        store_files(trimmed_request)
+    else:
+        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
+
+# final api call - blames each line of code in every file of the latest commit
+def run_blame_query(owner, repo, branch, auth):
+    # stores the authorisation token and accept
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+
+    # iterates over the files stored in latest_commit - a separate call must be done for each file
+    for file in latest_commit:
+        # gets query, passing in file path
+        query = get_blame_query(owner, repo, branch, file.path)
+        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        # trims the result of the api call to remove unnecessary nesting
+        trimmed_request = request.json()["data"]["repository"]["ref"]["target"]["blame"]["ranges"]
+
+        # if api call was successful, calls to assign blame to each user
+        if request.status_code == 200:
+            assign_blame(trimmed_request)
+        else:
+            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
+
+# assigns the info about the commits to each user
 def commit_info(commit_list):
-    user_list = {"universal": UserStats()}
+    global user_list
+
+    # gets info from commit_list (json format) and stores the results in a commit object
     for commit in commit_list:
         name = commit["node"]["author"]["name"]
+        sha = commit["node"]["oid"]
+        message = commit["node"]["message"]
+
         date = commit["node"]["committedDate"]
         day = date[:10]
         time = date[11:-1]
 
-        sha = commit["node"]["oid"]
-        message = commit["node"]["message"]
         additions = commit["node"]["additions"]
         deletions = commit["node"]["deletions"]
         commit_object = Commit(name, sha, message, day, time, additions, deletions)
 
+        # adds the commit to a user if it exists, or makes a new user with the commit if it doesn't
         if name in user_list:
             user_list[name].add(commit_object)
         else:
             user_list[name] = UserStats(commit_object)
+        # adds the commit to the "universal" user - represents group stats
         user_list["universal"].add(commit_object)
 
-    print_stats(user_list)
+
+# recursively traverses the tree of files storing each file in a fileContents object
+def store_files(tree, path=""):
+    global latest_commit
+
+    for entry in tree:
+        if "text" not in entry["object"]:
+            # if nested, goes one level down
+            store_files(entry["object"]["entries"], path + entry["name"] + '/')
+        else:
+            # if contains "text" field, makes new file object and adds it to the latest_commit list
+            latest_commit.append(FileContents(entry["name"], path, entry["object"]["text"]))
 
 
-def get_query(repo, owner, branch, end_cursor):
+# assigns lines of code written to each user
+def assign_blame(blame_list):
+    global latest_commit
+    global user_list
 
-    after = ""
-    if end_cursor is not None:
-        after = f', after: "{end_cursor}"'
+    # iterates through blame_list (json format) and gets the lines written by each user
+    for blame in blame_list:
+        lines = blame["endingLine"] - blame["startingLine"] + 1
+        user_list[blame["commit"]["author"]["name"]].add_to_lines(lines)
+        user_list["universal"].add_to_lines(lines)
 
-    # The GraphQL query defined as a multi-line string.
-    query = """
-    {
-        repository(name: "%s", owner: "%s") {
-            ref(qualifiedName: "%s") {
-                target {
-                    ... on Commit {
-                        id
-                        history(first: 100%s) {
-                            pageInfo {
-                                hasNextPage
-                                endCursor
-                            }
-                            edges {
-                                node {
-                                    oid
-                                    message
-                                    committedDate
-                                    additions
-                                    deletions
-                                    author {
-                                        name
-                                    }
-                                    tree {
-                                        entries{
-                                            name
-                                        }
-                                    }
-                                    blame(path: "requirements.txt") {
-                                        ranges {
-                                            commit {
-                                                author {
-                                                    name
-                                                }
-                                            }
-                                            startingLine
-                                            endingLine
-                                        }
-                                    }   
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    """ % (owner, repo, branch, after)
-    return query
+    # calculates the percentage of code each user owns
+    for name in user_list:
+        user_list[name].calculate_code_ownership(user_list["universal"].lines_written)
 
 
-def print_stats(user_list):
+# prints the results to the console
+def print_stats():
+    print("\nFiles:\n")
+    for file in latest_commit:
+        print(f"Name: {file.name}\n"
+              f"Path: {file.path}\n"
+              f"Contents:\n{file.contents}\n")
+
+    print("\nUsers:\n")
     for name in user_list:
         user_list[name].resolve_stats()
 
@@ -130,7 +174,9 @@ def print_stats(user_list):
               f"Most commits: {user_list[name].most_commits[1]} on {user_list[name].most_commits[0]}\n"
               f"Least commits: {user_list[name].least_commits[1]} on {user_list[name].least_commits[0]}\n"
               f"Average frequency: {user_list[name].avg_freq} commits per day\n"
-              f"Average commit size: {user_list[name].avg_no_changes} changes")
+              f"Average commit size: {user_list[name].avg_no_changes} changes\n"
+              f"Lines written: {user_list[name].lines_written}\n"
+              f"Percentage ownership: {user_list[name].code_ownership}%")
 
         if name == "universal":
             print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
@@ -139,12 +185,20 @@ def print_stats(user_list):
         # user_list[name].print_commits()
 
 
+# gathers all the api calls into a single function
+def get_stats(owner, repo, branch, auth):
+    run_commit_query(owner, repo, branch, auth)
+    run_text_query(owner, repo, branch, auth)
+    run_blame_query(owner, repo, branch, auth)
+
+
+# main function for testing code
 if __name__ == '__main__':
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
-    branch = "blame"
+    branch = "extend-api"
     auth = "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"
 
-    result = run_query(owner, repo, branch, auth)  # Execute the query
-    # pprint(result)
-    commit_info(result)
+    print(f"Gathering data from {repo}, branch {branch}...")
+    get_stats(owner, repo, branch, auth)
+    print_stats()
