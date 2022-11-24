@@ -139,10 +139,11 @@ class Repository(db.Model):
 
 #class for UserStats in the database
 class UserStats(db.Model):
-    days_committed = db.Column(db.Integer, primary_key=True)
-    avg_freq = db.Column(db.Integer, primary_key=True)
-    most_commits = db.Column(db.Integer, primary_key=True)
-    least_commits = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    days_committed = db.Column(db.Integer)
+    avg_freq = db.Column(db.Integer)
+    most_commits = db.Column(db.Integer)
+    least_commits = db.Column(db.Integer)
 
     # most and least additions/deletions/changes
     # tuple containing int and a dict representing the commit
@@ -153,9 +154,9 @@ class UserStats(db.Model):
     most_changes = Commit(most_changes)
     least_changes = Commit(least_changes)
 
-    avg_no_additions = db.Column(db.Integer, primary_key=True)
-    avg_no_deletions = db.Column(db.Integer, primary_key=True)
-    avg_no_changes = db.Column(db.Integer, primary_key=True)
+    avg_no_additions = db.Column(db.Integer)
+    avg_no_deletions = db.Column(db.Integer)
+    avg_no_changes = db.Column(db.Integer)
 
     #func for initing new object in db
     def __init__(self, commit = None):
