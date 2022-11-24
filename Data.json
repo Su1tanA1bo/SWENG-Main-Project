@@ -1,0 +1,52 @@
+{
+    "Users" : [
+        {
+        "UserId" : "universal",
+        "TotalCommits" : 176,
+        "DaysCommitted" : 8,
+        "MostCommits" : {
+            "Amount" : 129,
+            "Date" : "2022-11-15"
+        },
+        "LeastCommits" : {
+            "Amount" : 1,
+            "Date" : "2022-11-11"
+        },
+        "AverageFrequency" : 22,
+        "AverageCommitSize" : 60,
+        "LargestCommit" : 1551
+        },
+        {
+            "UserId" : "taylorj8",
+            "TotalCommits" : 23,
+            "DaysCommitted" : 4,
+            "MostCommits" : {
+                "Amount" : 10,
+                "Date" : "2022-11-22"
+            },
+            "LeastCommits" : {
+                "Amount" : 4,
+                "Date" : "2022-11-18"
+            },
+            "AverageFrequency" : 6,
+            "AverageCommitSize" : 75,
+            "LargestCommit" : 263
+        },
+        {
+            "UserId" : "gutsteip",
+            "TotalCommits" : 1,
+            "DaysCommitted" : 1,
+            "MostCommits" : {
+                "Amount" : 1,
+                "Date" : "2022-11-21"
+            },
+            "LeastCommits" : {
+                "Amount" : 1,
+                "Date" : "2022-11-21"
+            },
+            "AverageFrequency" : 1,
+            "AverageCommitSize" : 308,
+            "LargestCommit" : 308
+        }
+    ]
+}
