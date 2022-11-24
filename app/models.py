@@ -139,23 +139,23 @@ class Repository(db.Model):
 
 #class for UserStats in the database
 class UserStats(db.Model):
-    days_committed = db.Column(db.Integer)
-    avg_freq = db.Column(db.Integer)
-    most_commits = db.Column(db.Integer)
-    least_commits = db.Column(db.Integer)
+    days_committed = db.Column(db.Integer, primary_key=True)
+    avg_freq = db.Column(db.Integer, primary_key=True)
+    most_commits = db.Column(db.Integer, primary_key=True)
+    least_commits = db.Column(db.Integer, primary_key=True)
 
     # most and least additions/deletions/changes
     # tuple containing int and a dict representing the commit
-    most_additions = (-1, None)
-    least_additions = (-1, None)
-    most_deletions = (-1, None)
-    least_deletions = (-1, None)
-    most_changes = (-1, None)
-    least_changes = (-1, None)
+    most_additions = Commit(most_additions)
+    least_additions = Commit(least_additions)
+    most_deletions = Commit(most_deletions)
+    least_deletions = Commit(least_deletions)
+    most_changes = Commit(most_changes)
+    least_changes = Commit(least_changes)
 
-    avg_no_additions = db.Column(db.Integer)
-    avg_no_deletions = db.Column(db.Integer)
-    avg_no_changes = db.Column(db.Integer)
+    avg_no_additions = db.Column(db.Integer, primary_key=True)
+    avg_no_deletions = db.Column(db.Integer, primary_key=True)
+    avg_no_changes = db.Column(db.Integer, primary_key=True)
 
     #func for initing new object in db
     def __init__(self, commit = None):
@@ -188,7 +188,7 @@ class Commit(db.Model):
     changes = db.Column(db.Integer)
 
 
-    def __init__(self, name, sha, message, date, time, additions, deletions):
+    def __init__(self, name, sha=None, message=None, date=None, time=None, additions=-1, deletions=-1):
         self.author = name
         self.sha = sha
         self.message = message
