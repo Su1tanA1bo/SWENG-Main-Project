@@ -14,6 +14,8 @@
         },
         "AverageFrequency" : 22,
         "AverageCommitSize" : 60,
+        "LinesCommited" : 2749,
+        "PercentageOwnership" : 100.0,
         "LargestCommit" : 1551
         },
         {
@@ -30,6 +32,8 @@
             },
             "AverageFrequency" : 6,
             "AverageCommitSize" : 75,
+            "LinesCommited" : 555,
+            "PercentageOwnership" : 20.189,
             "LargestCommit" : 263
         },
         {
@@ -46,6 +50,8 @@
             },
             "AverageFrequency" : 1,
             "AverageCommitSize" : 308,
+            "LinesCommited" : 2086,
+            "PercentageOwnership" : 75.882,
             "LargestCommit" : 308
         }
     ]
