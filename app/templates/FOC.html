@@ -9,43 +9,77 @@
  </head>
  <body>
    <div>
-     <canvas id="myChart" width="900" height="400"></canvas>
+     <canvas id="myChart" width="400" height="200"></canvas>
+     <canvas id="myChart2" width="400" height="200"></canvas>
+     <canvas id="myChart3" width="400" height="200"></canvas>
    </div>
    <meta name="userList" content="{{listOfUsers}}">
+   <meta name="totalComList" content="{{listOfComTotal}}">
    <meta name="avgFrqList" content="{{listOfAvgFrq}}">
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const ctx = document.getElementById('myChart');
+  const gtx = document.getElementById('myChart2');
+  const ftx = document.getElementById('myChart3');
 
-  var data1 = document.getElementsByName('userList')[0].content
-  var data2 = document.getElementsByName('avgFrqList')[0].content
+  var listOfUsers = document.getElementsByName('userList')[0].content
+  var totalComList = document.getElementsByName('totalComList')[0].content
+  var listOfAvgFrq = document.getElementsByName('avgFrqList')[0].content
 
-  console.log(data1)
-  console.log(data2)
+  console.log(listOfAvgFrq)
 
-  data1 = data1.replace("[", "");
-  data1 = data1.replace("]", "");
-  data2 = data2.replace("'", "");
+  listOfUsers = listOfUsers.replace("[", "");
+  listOfUsers = listOfUsers.replace("]", "");
 
-  var splitData1 = data1.split(",")
+  var splitDataOflistOfUsers = listOfUsers.split(",")
 
-  console.log(splitData1)
+  totalComList = totalComList.replace("[", "");
+  totalComList = totalComList.replace("]", "");
 
-  data2 = data2.replace("[", "");
-  data2 = data2.replace("]", "");
-  data2 = data2.replace("'", "");
+  var splitDataOfTotalComList = totalComList.split(",")
 
-  var splitData2 = data2.split(",")
+  listOfAvgFrq = listOfAvgFrq.replace("[", "");
+  listOfAvgFrq = listOfAvgFrq.replace("]", "");
 
-  console.log(splitData2)
+  var splitDataOflistOfAvgFrq = listOfAvgFrq.split(",")
+
+  console.log(splitDataOflistOfAvgFrq)
 
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: splitData1,
+      labels: splitDataOflistOfUsers,
+      datasets: [{
+        label: 'Total Commits',
+        data: splitDataOfTotalComList,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+  new Chart(gtx, {
+    type: 'bar',
+    data: {
+      labels: splitDataOflistOfUsers,
+      datasets: [{
+        label: 'Average Frequency',
+        data: splitDataOflistOfAvgFrq,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+  new Chart(ftx, {
+    type: 'bar',
+    data: {
+      labels: splitDataOflistOfUsers,
       datasets: [{
         label: '# of Votes',
-        data: splitData2,
+        data: splitDataOflistOfAvgFrq,
         borderWidth: 1
       }]
     },
