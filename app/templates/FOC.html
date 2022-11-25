@@ -8,26 +8,50 @@
    <meta charset="utf-8">
  </head>
  <body>
-<p>{{data}}</p>
    <div>
      <canvas id="myChart" width="900" height="400"></canvas>
    </div>
+   <meta name="userList" content="{{listOfUsers}}">
+   <meta name="avgFrqList" content="{{listOfAvgFrq}}">
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const ctx = document.getElementById('myChart');
 
+  var data1 = document.getElementsByName('userList')[0].content
+  var data2 = document.getElementsByName('avgFrqList')[0].content
+
+  console.log(data1)
+  console.log(data2)
+
+  data1 = data1.replace(" ", "");
+  data1 = data1.replace("{", "");
+  data1 = data1.replace("}", "");
+
+  var splitData1 = data1.split(",")
+
+  console.log(splitData1)
+
+
+  data2 = data2.replace(" ", "");
+  data2 = data2.replace("{", "");
+  data2 = data2.replace("}", "");
+
+  var splitData2 = data2.split(",")
+
+  console.log(splitData2)
+
   new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['User-1', 'User-2', 'User-3', 'User-4', 'User-5', 'User-6'],
+      labels: splitData1,
       datasets: [{
         label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
+        data: splitData2,
         borderWidth: 1
       }]
     },
     options: {
-      responsive: false
+      responsive: true
     }
   });
 </script>
