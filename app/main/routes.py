@@ -18,6 +18,10 @@ from app import db
 from app.main.forms import EditProfileForm, EmptyForm, PostForm
 from app.models import User, Post
 from app.main import bp
+from app.models import UserStats 
+from query import user_list as list
+
+
 
 #function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
@@ -70,12 +74,13 @@ def user(username):
 @bp.route('/FOC')
 @login_required
 def FOC():
- return render_template("FOC.html")
+   return render_template("FOC.html", data=list['universal'].avg_freq)
 
 @bp.route('/SOC')
 @login_required
 def SOC():
- return render_template("SOC.html")
+    
+    return render_template("SOC.html")
 
 @bp.route('/LOC')
 @login_required
