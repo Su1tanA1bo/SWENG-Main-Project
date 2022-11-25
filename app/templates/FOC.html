@@ -9,86 +9,74 @@
  </head>
  <body>
    <div>
-     <canvas id="myChart" width="400" height="200"></canvas>
-     <canvas id="myChart2" width="400" height="200"></canvas>
-     <canvas id="myChart3" width="400" height="200"></canvas>
+     <canvas id="myChart3" width="1000" height="500"></canvas>
    </div>
    <meta name="userList" content="{{listOfUsers}}">
    <meta name="totalComList" content="{{listOfComTotal}}">
    <meta name="avgFrqList" content="{{listOfAvgFrq}}">
+   <meta name="mostCommitsList" content="{{listOfMostCommits}}">
+   <meta name="leastCommitsList" content="{{listOfLeastCommits}}">
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const ctx = document.getElementById('myChart');
-  const gtx = document.getElementById('myChart2');
   const ftx = document.getElementById('myChart3');
 
   var listOfUsers = document.getElementsByName('userList')[0].content
   var totalComList = document.getElementsByName('totalComList')[0].content
   var listOfAvgFrq = document.getElementsByName('avgFrqList')[0].content
+  var listOfMostCommits = document.getElementsByName('mostCommitsList')[0].content
+  var listOfLeastCommits = document.getElementsByName('leastCommitsList')[0].content
 
   listOfUsers = listOfUsers.replace("[", "");
   listOfUsers = listOfUsers.replace("]", "");
-
   var splitDataOflistOfUsers = listOfUsers.split(",")
-
-  console.log(splitDataOflistOfUsers)
+  console.log("splitDataOflistOfUsere: " + splitDataOflistOfUsers)
 
   totalComList = totalComList.replace("[", "");
   totalComList = totalComList.replace("]", "");
-
   var splitDataOfTotalComList = totalComList.split(",")
-
-  console.log(splitDataOfTotalComList)
+  console.log("splitDataOfTotalComList: " + splitDataOfTotalComList)
 
   listOfAvgFrq = listOfAvgFrq.replace("[", "");
   listOfAvgFrq = listOfAvgFrq.replace("]", "");
-
   var splitDataOflistOfAvgFrq = listOfAvgFrq.split(",")
+  console.log("splitDataOflistOfAvgFrq: " + splitDataOflistOfAvgFrq)
 
-  console.log(splitDataOflistOfAvgFrq)
+  listOfMostCommits = listOfMostCommits.replace("[", "");
+  listOfMostCommits = listOfMostCommits.replace("]", "");
+  var splitDataOflistOfMostCommits = listOfMostCommits.split(",")
+  console.log("listOfMostCommits: " + splitDataOflistOfMostCommits)
 
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: splitDataOflistOfUsers,
-      datasets: [{
-        label: 'Total Commits',
-        data: splitDataOfTotalComList,
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
-  new Chart(gtx, {
-    type: 'bar',
-    data: {
-      labels: splitDataOflistOfUsers,
-      datasets: [{
-        label: 'Average Frequency',
-        data: splitDataOflistOfAvgFrq,
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
+  listOfLeastCommits = listOfLeastCommits.replace("[", "");
+  listOfLeastCommits = listOfLeastCommits.replace("]", "");
+  var splitDataOflistOfLeastCommits = listOfLeastCommits.split(",")
+  console.log("listOfLeastCommits: " + splitDataOflistOfLeastCommits)
+
   new Chart(ftx, {
-    type: 'bar',
     data: {
-      labels: splitDataOflistOfUsers,
-      datasets: [{
-        label: 'Least and Most Commits',
-        data: splitDataOflistOfAvgFrq,
-        borderWidth: 1
-      }]
+        datasets: [{
+          type: 'bar',
+          label: 'Total Commits',
+          data: splitDataOfTotalComList,
+        }, {
+          type: 'bar',
+          label: 'Average Frequency',
+          data: splitDataOflistOfAvgFrq,
+        }, {
+          type: 'bar',
+          label: 'Most Commits',
+          data: splitDataOflistOfMostCommits,
+        }, {
+          type: 'bar',
+          label: 'Least Commits',
+          data: splitDataOflistOfLeastCommits,
+        }
+      ],
+        labels: splitDataOflistOfUsers
     },
     options: {
       responsive: true
     }
-  });
+});
 </script>
 
  </body>

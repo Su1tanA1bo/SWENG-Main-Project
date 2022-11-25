@@ -22,17 +22,19 @@ from app.models import UserStats
 from query import *
 
 
-run_commit_query("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
 get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
 
 list_user = []
 list_total_commits = []
 list_Avg_Frq = []
+list_Most_Commits = []
+list_Least_Commits = []
 for name in user_list:
     list_user += [name]
     list_total_commits += [user_list[name].total_commits()]
     list_Avg_Frq += [user_list[name].avg_freq]
-
+    list_Most_Commits += [user_list[name].most_commits[1]]
+    list_Least_Commits += [user_list[name].least_commits[1]]
    
 
 #function for updating time user was last seen at. Currently in UTC, will update later
@@ -88,7 +90,7 @@ def user(username):
 @bp.route('/FOC')
 @login_required
 def FOC():
-   return render_template("FOC.html", listOfUsers=list_user, listOfComTotal=list_total_commits, listOfAvgFrq=list_Avg_Frq)
+   return render_template("FOC.html", listOfUsers=list_user, listOfComTotal=list_total_commits, listOfAvgFrq=list_Avg_Frq, listOfMostCommits=list_Most_Commits, listOfLeastCommits=list_Least_Commits)
 
 @bp.route('/SOC')
 @login_required
