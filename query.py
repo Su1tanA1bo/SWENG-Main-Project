@@ -7,14 +7,15 @@
 ##*************************************************************************
 
 from app import db
+from complexity import run_Complexity_Checker
 from commit import Commit
 from file_contents import FileContents
 from queries import *
 from requests import post
 from user import UserStats
-from radon.visitors import ComplexityVisitor
+from radon.complexity import cc_rank
 
-
+Repo_Complexity_Score = 0
 user_list = {"universal": UserStats()}
 latest_commit = []
 
@@ -99,7 +100,23 @@ def run_blame_query(owner, repo, branch, auth):
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
-
+def get_Complexity_Values():
+    number_of_functions_scanned = 0
+    total_complexity_score = 0
+    number_of_files_scanned = 0
+    for file in latest_commit:
+        if file.extension == ".py":
+            complexityResults = run_Complexity_Checker(file)
+            number_of_functions_scanned += complexityResults[0]
+            total_complexity_score += complexityResults[1]
+            number_of_files_scanned += 1
+    
+    global Repo_Complexity_Score
+    Repo_Complexity_Score = total_complexity_score/number_of_functions_scanned     
+    print(f"Repo Complexity Score = {Repo_Complexity_Score}")
+    print(f"Repo Complexity Rank = {cc_rank(Repo_Complexity_Score)}")
+    
+    
 # assigns the info about the commits to each user
 def commit_info(commit_list):
     global user_list
@@ -166,7 +183,7 @@ def print_stats():
         print(f"Name: {file.name}\n"
               f"Path: {file.path}\n"
               f"Contents:\n{file.contents}\n")
-
+        
     print("\nUsers:\n")
     for name in user_list:
         print(f"User: {name}\n"
@@ -210,14 +227,8 @@ if __name__ == '__main__':
     print(f"Gathering data from {repo}, branch {branch}...")
     get_stats(owner, repo, branch, auth)
     print_stats()
-    number_of_files_scanned = 0
-    total_complexity_score = 0
-    v = ComplexityVisitor
-    for file in latest_commit:
-        print("name: "+str(file.name))
-        print("extension: "+str(file.extension))
-        if str(file.extension) == ".py":
-             v.from_code(file.contents)
-             print(v.complexity)
+    get_Complexity_Values()
+    
+    
     
         
