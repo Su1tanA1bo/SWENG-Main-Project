@@ -166,8 +166,6 @@ def print_stats():
 
     print("\nUsers:\n")
     for name in user_list:
-        user_list[name].resolve_stats()
-
         print(f"User: {name}\n"
               f"Total commits: {user_list[name].total_commits()}\n"
               f"Days committed: {user_list[name].days_committed}\n"
@@ -190,6 +188,9 @@ def get_stats(owner, repo, branch, auth):
     run_commit_query(owner, repo, branch, auth)
     run_text_query(owner, repo, branch, auth)
     run_blame_query(owner, repo, branch, auth)
+
+    for name in user_list:
+        user_list[name].resolve_stats()
 
 
 # main function for testing code
