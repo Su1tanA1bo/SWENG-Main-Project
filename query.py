@@ -6,10 +6,9 @@
 #   @Creation Date: 22/11/2022
 ##*************************************************************************
 
-
+from app import db
 from commit import Commit
 from file_contents import FileContents
-from pprint import pprint
 from queries import *
 from requests import post
 from user import UserStats
@@ -105,26 +104,29 @@ def commit_info(commit_list):
     global user_list
 
     # gets info from commit_list (json format) and stores the results in a commit object
-    for commit in commit_list:
-        name = commit["node"]["author"]["name"]
-        sha = commit["node"]["oid"]
-        message = commit["node"]["message"]
+    for commit_json in commit_list:
+        name = commit_json["node"]["author"]["name"]
+        sha = commit_json["node"]["oid"]
+        message = commit_json["node"]["message"]
 
-        date = commit["node"]["committedDate"]
+        date = commit_json["node"]["committedDate"]
         day = date[:10]
         time = date[11:-1]
 
-        additions = commit["node"]["additions"]
-        deletions = commit["node"]["deletions"]
-        commit_object = Commit(name, sha, message, day, time, additions, deletions)
+        additions = commit_json["node"]["additions"]
+        deletions = commit_json["node"]["deletions"]
+        commit = Commit(name, sha, message, day, time, additions, deletions)
+
+        # add each commit to the database
+        db.session.add(commit)
 
         # adds the commit to a user if it exists, or makes a new user with the commit if it doesn't
         if name in user_list:
-            user_list[name].add(commit_object)
+            user_list[name].add(commit)
         else:
-            user_list[name] = UserStats(commit_object)
+            user_list[name] = UserStats(commit)
         # adds the commit to the "universal" user - represents group stats
-        user_list["universal"].add(commit_object)
+        user_list["universal"].add(commit)
 
 
 # recursively traverses the tree of files storing each file in a fileContents object
@@ -189,8 +191,12 @@ def get_stats(owner, repo, branch, auth):
     run_text_query(owner, repo, branch, auth)
     run_blame_query(owner, repo, branch, auth)
 
+    # resolve the stats for each user and add it to the database
     for name in user_list:
         user_list[name].resolve_stats()
+        db.session.add(user_list[name])
+    # commit the info to the database
+    db.session.commit()
 
 
 # main function for testing code
