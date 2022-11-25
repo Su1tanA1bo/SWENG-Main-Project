@@ -23,7 +23,8 @@ from query import *
 
 
 run_commit_query("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
-    
+get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
+
 list_user = []
 list_total_commits = []
 list_Avg_Frq = []

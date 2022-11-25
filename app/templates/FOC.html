@@ -26,17 +26,19 @@
   var totalComList = document.getElementsByName('totalComList')[0].content
   var listOfAvgFrq = document.getElementsByName('avgFrqList')[0].content
 
-  console.log(listOfAvgFrq)
-
   listOfUsers = listOfUsers.replace("[", "");
   listOfUsers = listOfUsers.replace("]", "");
 
   var splitDataOflistOfUsers = listOfUsers.split(",")
 
+  console.log(splitDataOflistOfUsers)
+
   totalComList = totalComList.replace("[", "");
   totalComList = totalComList.replace("]", "");
 
   var splitDataOfTotalComList = totalComList.split(",")
+
+  console.log(splitDataOfTotalComList)
 
   listOfAvgFrq = listOfAvgFrq.replace("[", "");
   listOfAvgFrq = listOfAvgFrq.replace("]", "");
@@ -78,7 +80,7 @@
     data: {
       labels: splitDataOflistOfUsers,
       datasets: [{
-        label: '# of Votes',
+        label: 'Least and Most Commits',
         data: splitDataOflistOfAvgFrq,
         borderWidth: 1
       }]
