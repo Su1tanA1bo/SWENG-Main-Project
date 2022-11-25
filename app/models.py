@@ -160,6 +160,10 @@ class UserStats(db.Model):
     avg_no_deletions = db.Column(db.Integer)
     avg_no_changes = db.Column(db.Integer)
 
+    # blame info
+    lines_written = db.Column(db.Integer)
+    code_ownership = db.Column(db.Integer)
+
     #func for initing new object in db
     def __init__(self, commit = None):
         if commit is None:
@@ -175,6 +179,9 @@ class UserStats(db.Model):
         self.avg_no_additions = -1
         self.avg_no_deletions = -1
         self.avg_no_changes = -1
+
+        self.lines_written = -1
+        self.code_ownership = -1
 
     # add a commit to commits list
     def add(self, commit):
