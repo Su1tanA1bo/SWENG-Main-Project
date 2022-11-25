@@ -23,18 +23,17 @@
   console.log(data1)
   console.log(data2)
 
-  data1 = data1.replace(" ", "");
-  data1 = data1.replace("{", "");
-  data1 = data1.replace("}", "");
+  data1 = data1.replace("[", "");
+  data1 = data1.replace("]", "");
+  data2 = data2.replace("'", "");
 
   var splitData1 = data1.split(",")
 
   console.log(splitData1)
 
-
-  data2 = data2.replace(" ", "");
-  data2 = data2.replace("{", "");
-  data2 = data2.replace("}", "");
+  data2 = data2.replace("[", "");
+  data2 = data2.replace("]", "");
+  data2 = data2.replace("'", "");
 
   var splitData2 = data2.split(",")
 

@@ -21,14 +21,14 @@ from app.main import bp
 from app.models import UserStats 
 from query import *
 
+run_commit_query("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
 
-list_user = {'test', 'test2', 'test3', 'test4', 'test5'}
-# for name in user_list:
-#     list_user=(name + list_user for name in list_user)
+list_user = []
+list_total_commits = []
+for name in user_list:
+    list_user += [name]
+    list_total_commits += [user_list[name].total_commits()]
 
-list_avg_frq = {20, 30, 40, 50, 60}
-# for name in user_list:
-#     list_avg_frq = (user_list[name].avg_freq + list_avg_frq for user_list[name].avg_freq in list_avg_frq)
    
 
 #function for updating time user was last seen at. Currently in UTC, will update later
@@ -84,7 +84,7 @@ def user(username):
 @bp.route('/FOC')
 @login_required
 def FOC():
-   return render_template("FOC.html", listOfUsers=list_user, listOfAvgFrq=list_avg_frq)
+   return render_template("FOC.html", listOfUsers=list_user, listOfAvgFrq=list_total_commits)
 
 @bp.route('/SOC')
 @login_required
