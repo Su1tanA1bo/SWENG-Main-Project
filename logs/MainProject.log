@@ -1,0 +1,41 @@
+2022-11-25 01:44:31,208 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 77, in FOC
+    return render_template("FOC.html", data=list['universal'].most_commits)
+TypeError: 'DefaultMeta' object is not subscriptable
+2022-11-25 01:45:13,770 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 01:45:16,797 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 77, in FOC
+    return render_template("FOC.html", data=list['universal'].avg_freq)
+TypeError: 'DefaultMeta' object is not subscriptable
+2022-11-25 01:46:42,319 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:16:39,351 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:17:29,755 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:18:05,198 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:19:04,114 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:20:03,359 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:22:38,666 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:29:12,862 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:30:24,274 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 02:32:43,687 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]

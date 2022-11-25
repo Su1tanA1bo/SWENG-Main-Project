@@ -1,0 +1,118 @@
+2022-11-24 22:59:32,130 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 77, in FOC
+    return render_template("FOC.html", data=list["Universal"].avg_freq)
+KeyError: 'Universal'
+2022-11-24 22:59:38,898 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 77, in FOC
+    return render_template("FOC.html", data=list["Universal"].avg_freq)
+KeyError: 'Universal'
+2022-11-24 23:00:28,801 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:01:05,776 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:01:31,112 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:03:59,992 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:04:03,831 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 76, in FOC
+    return render_template("FOC.html", data=list)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\templating.py", line 146, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\templates\FOC.html", line 12, in template
+    user_list[name].resolve_stats()
+jinja2.exceptions.TemplateSyntaxError: expected token 'end of statement block', got 'user_list'
+2022-11-24 23:05:15,640 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:05:19,787 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 76, in FOC
+    return render_template("FOC.html", data=list)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\templating.py", line 146, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\templates\FOC.html", line 14, in template
+    {%print(f"User: {name}\n"
+jinja2.exceptions.TemplateSyntaxError: expected token ')', got 'string'
+2022-11-24 23:08:16,622 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:13:32,651 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:53:27,077 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 23:53:37,550 ERROR: Exception on /SOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 82, in SOC
+    myUser= UserStats.query.filter_by('universal')
+TypeError: filter_by() takes 1 positional argument but 2 were given
+2022-11-24 23:59:57,737 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 01:42:18,143 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-25 01:44:27,375 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
