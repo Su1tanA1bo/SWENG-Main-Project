@@ -113,7 +113,10 @@ class Repository(db.Model):
     reponame = db.Column(db.String(64), index=True, unique=True)
 
     ##TODO: add storage for all the data that a repository holds here
-
+    
+    code_complexity_value = db.Column(db.Float, unique=True, nullable=False)
+    code_complexity_rank = db.Column(db.String(64), unique=True, nullable=False)
+    
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo

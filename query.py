@@ -7,13 +7,15 @@
 ##*************************************************************************
 
 from app import db
+from complexity import run_Complexity_Checker
 from commit import Commit
 from file_contents import FileContents
 from queries import *
 from requests import post
 from user import UserStats
+from radon.complexity import cc_rank
 
-
+Repo_Complexity_Score = 0
 user_list = {"universal": UserStats()}
 latest_commit = []
 
@@ -98,7 +100,33 @@ def run_blame_query(owner, repo, branch, auth):
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
-
+def get_Complexity_Values():
+    #   will return repo complexity score and individual complexity score of each file. 
+    #   dictionary with individual file complexity scores will be represented like:
+    #   Dictionary with key being filename and value being a list with index 0 being complexity value (number)
+    #   and index 1 being complexity rank (A,B,C...) or ->
+    #   { 'fileName.py' = [ FileComplexityValue, FileComplexityRank ] }
+    
+    number_of_functions_scanned = 0
+    total_complexity_score = 0
+    number_of_files_scanned = 0
+    codeComplexityValuesDict = {}
+    for file in latest_commit:
+        if file.extension == ".py":
+            complexityResults = run_Complexity_Checker(file)
+            number_of_functions_scanned += complexityResults[0]
+            total_complexity_score += complexityResults[1]
+            number_of_files_scanned += 1
+            codeComplexityValuesDict[file.name] = [complexityResults[2], complexityResults[3]]
+            print(codeComplexityValuesDict)
+    
+    global Repo_Complexity_Score
+    Repo_Complexity_Score = total_complexity_score/number_of_functions_scanned 
+    Repo_Complexity_Rank = cc_rank(Repo_Complexity_Score) 
+    #print(f"Repo Complexity Score = {Repo_Complexity_Score}")
+    #print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
+    
+    
 # assigns the info about the commits to each user
 def commit_info(commit_list):
     global user_list
@@ -165,7 +193,7 @@ def print_stats():
         print(f"Name: {file.name}\n"
               f"Path: {file.path}\n"
               f"Contents:\n{file.contents}\n")
-
+        
     print("\nUsers:\n")
     for name in user_list:
         print(f"User: {name}\n"
@@ -209,3 +237,8 @@ if __name__ == '__main__':
     print(f"Gathering data from {repo}, branch {branch}...")
     get_stats(owner, repo, branch, auth)
     print_stats()
+    get_Complexity_Values()
+    
+    
+    
+        
