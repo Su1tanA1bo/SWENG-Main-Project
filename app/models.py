@@ -11,6 +11,7 @@
 
 from datetime import datetime
 from hashlib import md5
+from pprint import pprint
 from time import time
 from flask import current_app
 from flask_login import UserMixin
@@ -237,26 +238,27 @@ class UserStats(db.Model):
             total_deletions += commit.deletions
 
             # following ifs compare current commit with current biggest/smallest
-            if commit.changes > most_changes:
-                most_changes = commit.changes
-                self.most_changes = (most_changes, commit)
-            if commit.changes < least_changes:
-                least_changes = commit.changes
-                self.least_changes = (least_changes, commit)
+            tempMostChanges = Commit.query.filter_by(sha=most_changes).first()
+            if commit.changes > tempMostChanges.changes:
+                self.most_changes = commit.sha
 
-            if commit.additions > most_additions:
-                most_additions = commit.additions
-                self.most_additions = (most_additions, commit)
-            if commit.additions < least_additions:
-                least_additions = commit.additions
-                self.least_additions = (least_additions, commit)
+            tempLeastChanges = Commit.query.filter_by(sha=least_changes).first()
+            if commit.changes < tempLeastChanges.changes:
+                self.least_changes = commit.sha
 
-            if commit.deletions > most_deletions:
-                most_deletions = commit.deletions
-                self.most_deletions = (most_deletions, commit)
-            if commit.deletions < least_deletions:
-                least_deletions = commit.deletions
-                self.least_deletions = (least_deletions, commit)
+            tempMostAdditions = Commit.query.filter_by(sha=most_additions).first()
+            if commit.additions > tempMostAdditions.additions:
+                self.most_additions = commit.sha
+            tempLeastAdditions = Commit.query.filter_by(sha=least_additions).first()
+            if commit.additions < tempLeastAdditions.additions:
+                self.least_additions = commit.sha
+
+            tempMostDeletions = Commit.query.filter_by(sha=most_deletions).first()
+            if commit.deletions > tempMostDeletions.deletions:
+                self.most_deletions = commit.sha
+            tempLeastDeletions = Commit.query.filter_by(sha=least_deletions).first()
+            if commit.deletions < tempLeastDeletions.deletions:
+                least_deletions = commit.sha
 
             # counts commits in each day
             if commit.date in commits_per_day:
