@@ -6,16 +6,18 @@
 #   @Creation Date: 22/11/2022
 ##*************************************************************************
 
-
+from app import db
+from complexity import run_Complexity_Checker
 from commit import Commit
 from file_contents import FileContents
-from pprint import pprint
 from queries import *
 from requests import post
 from user import UserStats
+from radon.complexity import cc_rank
 
-
-user_list = {"universal": UserStats()}
+GROUP_STATS = "All Users"
+Repo_Complexity_Score = 0
+user_list = {GROUP_STATS: UserStats()}
 latest_commit = []
 
 
@@ -99,32 +101,61 @@ def run_blame_query(owner, repo, branch, auth):
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
-
+def get_Complexity_Values():
+    #   will return repo complexity score and individual complexity score of each file. 
+    #   dictionary with individual file complexity scores will be represented like:
+    #   Dictionary with key being filename and value being a list with index 0 being complexity value (number)
+    #   and index 1 being complexity rank (A,B,C...) or ->
+    #   { 'fileName.py' = [ FileComplexityValue, FileComplexityRank ] }
+    
+    number_of_functions_scanned = 0
+    total_complexity_score = 0
+    number_of_files_scanned = 0
+    codeComplexityValuesDict = {}
+    for file in latest_commit:
+        if file.extension == ".py":
+            complexityResults = run_Complexity_Checker(file)
+            number_of_functions_scanned += complexityResults[0]
+            total_complexity_score += complexityResults[1]
+            number_of_files_scanned += 1
+            codeComplexityValuesDict[file.name] = [complexityResults[2], complexityResults[3]]
+            print(codeComplexityValuesDict)
+    
+    global Repo_Complexity_Score
+    Repo_Complexity_Score = total_complexity_score/number_of_functions_scanned 
+    Repo_Complexity_Rank = cc_rank(Repo_Complexity_Score) 
+    #print(f"Repo Complexity Score = {Repo_Complexity_Score}")
+    #print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
+    
+    
 # assigns the info about the commits to each user
 def commit_info(commit_list):
     global user_list
 
     # gets info from commit_list (json format) and stores the results in a commit object
-    for commit in commit_list:
-        name = commit["node"]["author"]["name"]
-        sha = commit["node"]["oid"]
-        message = commit["node"]["message"]
+    for commit_json in commit_list:
+        name = commit_json["node"]["author"]["name"]
+        sha = commit_json["node"]["oid"]
+        message = commit_json["node"]["message"]
 
-        date = commit["node"]["committedDate"]
+        date = commit_json["node"]["committedDate"]
         day = date[:10]
         time = date[11:-1]
 
-        additions = commit["node"]["additions"]
-        deletions = commit["node"]["deletions"]
-        commit_object = Commit(name, sha, message, day, time, additions, deletions)
+        additions = commit_json["node"]["additions"]
+        deletions = commit_json["node"]["deletions"]
+        commit = Commit(name, sha, message, day, time, additions, deletions)
+
+        # add each commit to the database
+        db.session.add(commit)
 
         # adds the commit to a user if it exists, or makes a new user with the commit if it doesn't
         if name in user_list:
-            user_list[name].add(commit_object)
+            user_list[name].add(commit)
         else:
-            user_list[name] = UserStats(commit_object)
-        # adds the commit to the "universal" user - represents group stats
-        user_list["universal"].add(commit_object)
+            user_list[name] = UserStats(commit)
+        # adds the commit to the "Group" user - represents group stats
+        user_list[GROUP_STATS].add(commit)
 
 
 # recursively traverses the tree of files storing each file in a fileContents object
@@ -149,11 +180,11 @@ def assign_blame(blame_list):
     for blame in blame_list:
         lines = blame["endingLine"] - blame["startingLine"] + 1
         user_list[blame["commit"]["author"]["name"]].add_to_lines(lines)
-        user_list["universal"].add_to_lines(lines)
+        user_list[GROUP_STATS].add_to_lines(lines)
 
     # calculates the percentage of code each user owns
     for name in user_list:
-        user_list[name].calculate_code_ownership(user_list["universal"].lines_written)
+        user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
 
 
 # prints the results to the console
@@ -163,11 +194,9 @@ def print_stats():
         print(f"Name: {file.name}\n"
               f"Path: {file.path}\n"
               f"Contents:\n{file.contents}\n")
-
+        
     print("\nUsers:\n")
     for name in user_list:
-        user_list[name].resolve_stats()
-
         print(f"User: {name}\n"
               f"Total commits: {user_list[name].total_commits()}\n"
               f"Days committed: {user_list[name].days_committed}\n"
@@ -178,7 +207,7 @@ def print_stats():
               f"Lines written: {user_list[name].lines_written}\n"
               f"Percentage ownership: {user_list[name].code_ownership}%")
 
-        if name == "universal":
+        if name == GROUP_STATS:
             print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
         else:
             print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
@@ -190,9 +219,12 @@ def get_stats(owner, repo, branch, auth):
     run_commit_query(owner, repo, branch, auth)
     run_text_query(owner, repo, branch, auth)
     run_blame_query(owner, repo, branch, auth)
-
+    # resolve the stats for each user and add it to the database
     for name in user_list:
         user_list[name].resolve_stats()
+        db.session.add(user_list[name])
+    # commit the info to the database
+    db.session.commit()
 
 
 # main function for testing code
@@ -204,4 +236,5 @@ if __name__ == '__main__':
 
     print(f"Gathering data from {repo}, branch {branch}...")
     get_stats(owner, repo, branch, auth)
+    get_Complexity_Values()
     print_stats()

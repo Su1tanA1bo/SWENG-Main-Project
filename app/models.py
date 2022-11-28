@@ -11,6 +11,7 @@
 
 from datetime import datetime
 from hashlib import md5
+from pprint import pprint
 from time import time
 from flask import current_app
 from flask_login import UserMixin
@@ -112,7 +113,10 @@ class Repository(db.Model):
     reponame = db.Column(db.String(64), index=True, unique=True)
 
     ##TODO: add storage for all the data that a repository holds here
-
+    
+    code_complexity_value = db.Column(db.Float, unique=True, nullable=False)
+    code_complexity_rank = db.Column(db.String(64), unique=True, nullable=False)
+    
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     #defines members as a many to many relationship within the repo
@@ -160,6 +164,10 @@ class UserStats(db.Model):
     avg_no_deletions = db.Column(db.Integer)
     avg_no_changes = db.Column(db.Integer)
 
+    # blame info
+    lines_written = db.Column(db.Integer)
+    code_ownership = db.Column(db.Integer)
+
     #func for initing new object in db
     def __init__(self, commit = None):
         if commit is None:
@@ -176,8 +184,107 @@ class UserStats(db.Model):
         self.avg_no_deletions = -1
         self.avg_no_changes = -1
 
-        #lists and dicts in the user.py need to become tables in models.py
+        self.lines_written = -1
+        self.code_ownership = -1
 
+    # add a commit to commits list
+    def add(self, commit):
+        self.commits.append(commit)
+
+    # finds the number of days that a user committed on
+    def find_days_committed(self):
+        days = set()
+        for commit in self.commits:
+            days.add(commit.date)
+        return len(days)
+
+    # function for adding number of lines written
+    def add_to_lines(self, lines):
+        self.lines_written += lines
+
+    # calculate percentage of code owner by this user
+    def calculate_code_ownership(self, total_lines):
+        self.code_ownership = round((self.lines_written / total_lines) * 100, 3)
+
+    # getter for total number of commits
+    def total_commits(self):
+        return len(self.commits)
+
+    # pretty prints the list of commits
+    def print_commits(self):
+        pprint(self.commits)
+        print("\n")
+
+    # update all the relevant fields for a user
+    def resolve_stats(self):
+        self.days_committed = self.find_days_committed()
+        self.avg_freq = round(len(self.commits) / self.days_committed)
+
+        most_changes = 0
+        least_changes = float('inf')
+
+        most_additions = 0
+        least_additions = float('inf')
+
+        most_deletions = 0
+        least_deletions = float('inf')
+
+        total_changes = 0
+        total_additions = 0
+        total_deletions = 0
+
+        # dict with date as key, number of commits as value
+        commits_per_day = {}
+        for commit in self.commits:
+            total_changes += commit.changes
+            total_additions += commit.additions
+            total_deletions += commit.deletions
+
+            # following ifs compare current commit with current biggest/smallest
+            tempMostChanges = Commit.query.filter_by(sha=most_changes).first()
+            if commit.changes > tempMostChanges.changes:
+                self.most_changes = commit.sha
+
+            tempLeastChanges = Commit.query.filter_by(sha=least_changes).first()
+            if commit.changes < tempLeastChanges.changes:
+                self.least_changes = commit.sha
+
+            tempMostAdditions = Commit.query.filter_by(sha=most_additions).first()
+            if commit.additions > tempMostAdditions.additions:
+                self.most_additions = commit.sha
+            tempLeastAdditions = Commit.query.filter_by(sha=least_additions).first()
+            if commit.additions < tempLeastAdditions.additions:
+                self.least_additions = commit.sha
+
+            tempMostDeletions = Commit.query.filter_by(sha=most_deletions).first()
+            if commit.deletions > tempMostDeletions.deletions:
+                self.most_deletions = commit.sha
+            tempLeastDeletions = Commit.query.filter_by(sha=least_deletions).first()
+            if commit.deletions < tempLeastDeletions.deletions:
+                least_deletions = commit.sha
+
+            # counts commits in each day
+            if commit.date in commits_per_day:
+                commits_per_day[commit.date] += 1
+            else:
+                commits_per_day[commit.date] = 1
+
+        most_commits = 0
+        least_commits = float('inf')
+
+        # finds the days with the most and least commits
+        for day in commits_per_day:
+            if commits_per_day[day] > most_commits:
+                most_commits = commits_per_day[day]
+                self.most_commits = (day, most_commits)
+            if commits_per_day[day] < least_commits:
+                least_commits = commits_per_day[day]
+                self.least_commits = (day, least_commits)
+
+        # gets averages
+        self.avg_no_changes = round(total_changes / len(self.commits))
+        self.avg_no_additions = round(total_additions / len(self.commits))
+        self.avg_no_deletions = round(total_deletions / len(self.commits))
 
 #Class for commit in database. Works as a tuple in practie, as tuples cannot be stored in db naturally
 class Commit(db.Model):
