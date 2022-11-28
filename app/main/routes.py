@@ -29,14 +29,18 @@ list_total_commits = []
 list_Avg_Frq = []
 list_Most_Commits = []
 list_Least_Commits = []
+list_Largest_Commit = []
+list_Days_Commited=[]
+list_Avg_Size=[]
 for name in user_list:
     list_user += [name]
     list_total_commits += [user_list[name].total_commits()]
     list_Avg_Frq += [user_list[name].avg_freq]
     list_Most_Commits += [user_list[name].most_commits[1]]
     list_Least_Commits += [user_list[name].least_commits[1]]
-   
-
+    list_Largest_Commit += [user_list[name].most_changes[0]]
+    list_Days_Commited += [user_list[name].days_committed]
+    list_Avg_Size += [user_list[name].avg_no_changes]
 #function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
 def before_request():
@@ -96,7 +100,7 @@ def FOC():
 @login_required
 def SOC():
     
-    return render_template("SOC.html")
+    return render_template("SOC.html", listOfUsers=list_user, listOfLargestCommit=list_Largest_Commit, listOfDays=list_Days_Commited, listOfAvgSize=list_Avg_Size)
 
 @bp.route('/LOC')
 @login_required

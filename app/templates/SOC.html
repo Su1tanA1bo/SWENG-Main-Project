@@ -9,24 +9,64 @@
  <body>
  {{myUser}}
    <div>
-     <canvas id="myChart-2" width="900" height="400"></canvas>
+     <canvas id="myChart-2" width="1000" height="500"></canvas>
    </div>
+    <meta name="userList" content="{{listOfUsers}}">
+    <meta name="largestCommitList" content="{{listOfLargestCommit}}">
+    <meta name="daysCommittedList" content="{{listOfDays}}">
+    <meta name="avgSizeList" content="{{listOfAvgSize}}">
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
  const ctx = document.getElementById('myChart-2');
+
+ var listOfUsers = document.getElementsByName('userList')[0].content
+ var listOfLargestCommit = document.getElementsByName('largestCommitList')[0].content
+ var listOfDays= document.getElementsByName('daysCommittedList')[0].content
+ var listOfAvgSize= document.getElementsByName('avgSizeList')[0].content
+
+  listOfUsers = listOfUsers.replace("[", "");
+  listOfUsers = listOfUsers.replace("]", "");
+  var splitDataOflistOfUsers = listOfUsers.split(",")
+  console.log("splitDataOflistOfUsere: " + splitDataOflistOfUsers)
+
+ listOfLargestCommit = listOfLargestCommit.replace("[", "");
+ listOfLargestCommit = listOfLargestCommit.replace("]", "");
+ var splitDataOflistOfLargestCommit = listOfLargestCommit.split(",")
+ console.log("listOfLargestCommit: " + splitDataOflistOfLargestCommit)
+
+ listOfDays = listOfDays.replace("[", "");
+  listOfDays = listOfDays.replace("]", "");
+  var splitDataOfDays = listOfDays.split(",")
+  console.log("splitDataOfDays: " + splitDataOfDays)
+
+listOfAvgSize = listOfAvgSize.replace("[", "");
+  listOfAvgSize = listOfAvgSize.replace("]", "");
+  var splitDataOfAvgSize = listOfAvgSize.split(",")
+  console.log("splitDataOfAvgSize: " + splitDataOfAvgSize)
+
   new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: ['Measure-1', 'Measure-2', 'Measure-3', 'Measure-4', 'Measure-5', 'Measure-6'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
-    },
+     data: {
+        datasets: [{
+          type: 'bar',
+          label: 'Largest Commit changes',
+          data: splitDataOflistOfLargestCommit,
+        },
+        {
+          type: 'bar',
+          label: 'Days Committed',
+          data: splitDataOfDays,
+        },
+        {
+          type: 'bar',
+          label: 'Avg Size of Changes',
+          data: splitDataOfAvgSize,
+        }],
+        labels: splitDataOflistOfUsers
+        },
     options: {
       responsive: false
     }
+
   });
 </script>
 
