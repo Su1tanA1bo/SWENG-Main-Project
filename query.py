@@ -219,7 +219,6 @@ def get_stats(owner, repo, branch, auth):
     run_commit_query(owner, repo, branch, auth)
     run_text_query(owner, repo, branch, auth)
     run_blame_query(owner, repo, branch, auth)
-
     # resolve the stats for each user and add it to the database
     for name in user_list:
         user_list[name].resolve_stats()
