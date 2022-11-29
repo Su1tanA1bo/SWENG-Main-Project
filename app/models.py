@@ -112,10 +112,9 @@ class Repository(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reponame = db.Column(db.String(64), index=True, unique=True)
 
-    ##TODO: add storage for all the data that a repository holds here
     
-    code_complexity_value = db.Column(db.Float, unique=True, nullable=False)
-    code_complexity_rank = db.Column(db.String(64), unique=True, nullable=False)
+    code_complexity_value = db.Column(db.Float)
+    code_complexity_rank = db.Column(db.String(64))
     
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -242,25 +241,39 @@ class UserStats(db.Model):
 
             # following ifs compare current commit with current biggest/smallest
             tempMostChanges = Commit.query.filter_by(sha=most_changes).first()
-            if commit.changes > tempMostChanges.changes:
+            if tempMostChanges is None:
+                self.most_changes = commit.sha
+            elif commit.changes > tempMostChanges.changes:
                 self.most_changes = commit.sha
 
             tempLeastChanges = Commit.query.filter_by(sha=least_changes).first()
-            if commit.changes < tempLeastChanges.changes:
+            if tempLeastChanges is None:
+                self.least_changes = commit.sha
+            elif commit.changes < tempLeastChanges.changes:
                 self.least_changes = commit.sha
 
             tempMostAdditions = Commit.query.filter_by(sha=most_additions).first()
-            if commit.additions > tempMostAdditions.additions:
+            if tempMostAdditions is None:
                 self.most_additions = commit.sha
+            elif commit.additions > tempMostAdditions.additions:
+                self.most_additions = commit.sha
+
             tempLeastAdditions = Commit.query.filter_by(sha=least_additions).first()
-            if commit.additions < tempLeastAdditions.additions:
+            if tempLeastAdditions is None:
+                self.least_additions = commit.sha
+            elif commit.additions < tempLeastAdditions.additions:
                 self.least_additions = commit.sha
 
             tempMostDeletions = Commit.query.filter_by(sha=most_deletions).first()
-            if commit.deletions > tempMostDeletions.deletions:
+            if tempMostDeletions is None:
                 self.most_deletions = commit.sha
+            elif commit.deletions > tempMostDeletions.deletions:
+                self.most_deletions = commit.sha
+
             tempLeastDeletions = Commit.query.filter_by(sha=least_deletions).first()
-            if commit.deletions < tempLeastDeletions.deletions:
+            if tempLeastDeletions is None:
+                self.least_deletions = commit.sha
+            elif commit.deletions < tempLeastDeletions.deletions:
                 least_deletions = commit.sha
 
             # counts commits in each day
