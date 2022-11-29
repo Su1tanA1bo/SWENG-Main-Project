@@ -8,11 +8,10 @@
 
 from app import db
 from complexity import run_Complexity_Checker
-from commit import Commit
+from app.models import Commit, UserStats
 from file_contents import FileContents
 from queries import *
 from requests import post
-from user import UserStats
 from radon.complexity import cc_rank
 
 GROUP_STATS = "All Users"
