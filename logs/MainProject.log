@@ -48,3 +48,36 @@ TypeError: 'DefaultMeta' object is not subscriptable
 2022-11-27 23:30:44,631 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
 2022-11-27 23:39:28,142 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
 2022-11-27 23:50:35,340 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
+2022-11-29 10:48:14,674 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
+2022-11-29 10:48:30,313 ERROR: Exception on /get_stats_r [GET] [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\sqlalchemy\orm\session.py", line 2636, in add
+    state = attributes.instance_state(instance)
+AttributeError: 'Commit' object has no attribute '_sa_instance_state'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\main\routes.py", line 28, in get_stats_r
+    get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\query.py", line 225, in get_stats
+    run_commit_query(owner, repo, branch, auth)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\query.py", line 64, in run_commit_query
+    commit_info(commit_list)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\query.py", line 156, in commit_info
+    db.session.add(commit)
+  File "<string>", line 2, in add
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\sqlalchemy\orm\session.py", line 2638, in add
+    util.raise_(
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\sqlalchemy\util\compat.py", line 210, in raise_
+    raise exception
+sqlalchemy.orm.exc.UnmappedInstanceError: Class 'commit.Commit' is not mapped
+2022-11-29 10:49:55,517 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]

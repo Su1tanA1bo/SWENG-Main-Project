@@ -22,25 +22,29 @@ from app.models import UserStats
 from query import *
 
 
-get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
+#function for updating time user was last seen at. Currently in UTC, will update later
+@bp.route('/get_stats_r', methods=['GET'])
+def get_stats_r():
+    get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
 
-list_user = []
-list_total_commits = []
-list_Avg_Frq = []
-list_Most_Commits = []
-list_Least_Commits = []
-list_Largest_Commit = []
-list_Days_Commited=[]
-list_Avg_Size=[]
-for name in user_list:
-    list_user += [name]
-    list_total_commits += [user_list[name].total_commits()]
-    list_Avg_Frq += [user_list[name].avg_freq]
-    list_Most_Commits += [user_list[name].most_commits[1]]
-    list_Least_Commits += [user_list[name].least_commits[1]]
-    list_Largest_Commit += [user_list[name].most_changes[0]]
-    list_Days_Commited += [user_list[name].days_committed]
-    list_Avg_Size += [user_list[name].avg_no_changes]
+    list_user = []
+    list_total_commits = []
+    list_Avg_Frq = []
+    list_Most_Commits = []
+    list_Least_Commits = []
+    list_Largest_Commit = []
+    list_Days_Commited=[]
+    list_Avg_Size=[]
+    for name in user_list:
+        list_user += [name]
+        list_total_commits += [user_list[name].total_commits()]
+        list_Avg_Frq += [user_list[name].avg_freq]
+        list_Most_Commits += [user_list[name].most_commits[1]]
+        list_Least_Commits += [user_list[name].least_commits[1]]
+        list_Largest_Commit += [user_list[name].most_changes[0]]
+        list_Days_Commited += [user_list[name].days_committed]
+        list_Avg_Size += [user_list[name].avg_no_changes]
+
 #function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
 def before_request():
