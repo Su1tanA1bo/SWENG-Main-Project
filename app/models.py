@@ -176,6 +176,7 @@ class UserStats(db.Model):
         ##init all the values from UserStats original here
         self.days_committed = -1
         self.avg_freq = -1
+        
         self.most_commits = -1
         self.least_commits = -1
 
@@ -274,7 +275,7 @@ class UserStats(db.Model):
             if tempLeastDeletions is None:
                 self.least_deletions = commit.sha
             elif commit.deletions < tempLeastDeletions.deletions:
-                least_deletions = commit.sha
+                self.least_deletions = commit.sha
 
             # counts commits in each day
             if commit.date in commits_per_day:
@@ -289,10 +290,10 @@ class UserStats(db.Model):
         for day in commits_per_day:
             if commits_per_day[day] > most_commits:
                 most_commits = commits_per_day[day]
-                self.most_commits = (day, most_commits)
+                self.most_commits = most_commits
             if commits_per_day[day] < least_commits:
                 least_commits = commits_per_day[day]
-                self.least_commits = (day, least_commits)
+                self.least_commits = least_commits
 
         # gets averages
         self.avg_no_changes = round(total_changes / len(self.commits))
