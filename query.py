@@ -14,7 +14,8 @@ from radon.complexity import cc_rank
 
 GROUP_STATS = "All Users"
 Repo_Complexity_Score = 0
-user_list = {GROUP_STATS: UserStats()}
+user_list = {}
+# user_list = {GROUP_STATS: UserStats()}
 latest_commit = []
 
 
@@ -150,7 +151,7 @@ def commit_info(commit_list):
         else:
             user_list[name] = UserStats(commit)
         # adds the commit to the "Group" user - represents group stats
-        user_list[GROUP_STATS].add(commit)
+        # user_list[GROUP_STATS].add(commit)
 
 
 # recursively traverses the tree of files storing each file in a fileContents object
@@ -175,11 +176,11 @@ def assign_blame(blame_list):
     for blame in blame_list:
         lines = blame["endingLine"] - blame["startingLine"] + 1
         user_list[blame["commit"]["author"]["name"]].add_to_lines(lines)
-        user_list[GROUP_STATS].add_to_lines(lines)
+        # user_list[GROUP_STATS].add_to_lines(lines)
 
     # calculates the percentage of code each user owns
-    for name in user_list:
-        user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
+    # for name in user_list:
+    #     user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
 
 
 # prints the results to the console
@@ -202,10 +203,10 @@ def print_stats():
               f"Lines written: {user_list[name].lines_written}\n"
               f"Percentage ownership: {user_list[name].code_ownership}%")
 
-        if name == GROUP_STATS:
-            print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
-        else:
-            print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
+        # if name == GROUP_STATS:
+        #     print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
+        # else:
+        print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
         # user_list[name].print_commits()
 
 

@@ -1,62 +1,4 @@
-2022-11-25 01:44:31,208 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
-Traceback (most recent call last):
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
-    response = self.full_dispatch_request()
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
-    return current_app.ensure_sync(func)(*args, **kwargs)
-  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 77, in FOC
-    return render_template("FOC.html", data=list['universal'].most_commits)
-TypeError: 'DefaultMeta' object is not subscriptable
-2022-11-25 01:45:13,770 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 01:45:16,797 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
-Traceback (most recent call last):
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
-    response = self.full_dispatch_request()
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
-    return current_app.ensure_sync(func)(*args, **kwargs)
-  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 77, in FOC
-    return render_template("FOC.html", data=list['universal'].avg_freq)
-TypeError: 'DefaultMeta' object is not subscriptable
-2022-11-25 01:46:42,319 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:16:39,351 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:17:29,755 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:18:05,198 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:19:04,114 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:20:03,359 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:22:38,666 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:29:12,862 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:30:24,274 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 02:32:43,687 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-25 20:39:12,114 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-26 02:26:16,738 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:20:56,479 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:23:39,134 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:26:14,024 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:29:15,084 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:30:44,631 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:39:28,142 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-27 23:50:35,340 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\wpfrontend\app\__init__.py:87]
-2022-11-29 10:48:14,674 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
-2022-11-29 10:48:30,313 ERROR: Exception on /get_stats_r [GET] [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py:1741]
-Traceback (most recent call last):
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\sqlalchemy\orm\session.py", line 2636, in add
-    state = attributes.instance_state(instance)
-AttributeError: 'Commit' object has no attribute '_sa_instance_state'
-
-The above exception was the direct cause of the following exception:
-
+2022-11-30 14:51:40,103 ERROR: Exception on / [GET] [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py:1741]
 Traceback (most recent call last):
   File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 2525, in wsgi_app
     response = self.full_dispatch_request()
@@ -66,18 +8,69 @@ Traceback (most recent call last):
     rv = self.dispatch_request()
   File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1796, in dispatch_request
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\main\routes.py", line 28, in get_stats_r
-    get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\query.py", line 225, in get_stats
-    run_commit_query(owner, repo, branch, auth)
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\query.py", line 64, in run_commit_query
-    commit_info(commit_list)
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\query.py", line 156, in commit_info
-    db.session.add(commit)
-  File "<string>", line 2, in add
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\sqlalchemy\orm\session.py", line 2638, in add
-    util.raise_(
-  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\sqlalchemy\util\compat.py", line 210, in raise_
-    raise exception
-sqlalchemy.orm.exc.UnmappedInstanceError: Class 'commit.Commit' is not mapped
-2022-11-29 10:49:55,517 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\main\routes.py", line 61, in index
+    return render_template('index.html', title='Home')
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\templating.py", line 147, in render_template
+    return _render(app, template, context)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\templating.py", line 130, in _render
+    rv = template.render(context)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\templates\index.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\templates\base.html", line 1, in top-level template code
+    {% extends 'bootstrap/base.html' %}
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
+    {% block doc -%}
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 4, in block 'doc'
+    {%- block html %}
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 20, in block 'html'
+    {% block body -%}
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 21, in block 'body'
+    {% block navbar %}
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\templates\base.html", line 19, in block 'navbar'
+    <li class="nav-item "> <a class="nav-link" href="{{ url_for('main.explore') }}">Explore</a></li>
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 2031, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 2020, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\werkzeug\routing\map.py", line 917, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'main.explore'. Did you mean 'main.user' instead?
+2022-11-30 14:52:28,281 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
+2022-11-30 14:52:40,819 ERROR: Exception on /user/fcgvhbijnokadfsg [GET] [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\main\routes.py", line 72, in user
+    return render_template('user.html', user=user, )
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\templating.py", line 146, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 768, in compile
+    self.handle_exception(source=source_hint)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\templates\user.html", line 18, in template
+    {% endblock %}
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endblock'. You probably made a nesting mistake. Jinja is expecting this tag, but currently looking for 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
+2022-11-30 14:53:32,585 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
