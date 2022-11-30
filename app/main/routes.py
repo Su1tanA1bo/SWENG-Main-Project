@@ -22,9 +22,7 @@ from query import *
 
 
 #function for updating time user was last seen at. Currently in UTC, will update later
-@bp.route('/get_stats_r', methods=['GET'])
-def get_stats_r():
-    get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
+get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
 
 #User List Object
 list_user = []
@@ -52,7 +50,7 @@ for name in user_list:
     list_user += [name]
     list_total_commits += [user_list[name].total_commits()]
     list_Avg_Frq += [user_list[name].avg_freq]
-    list_Most_Commits += [user_list[name].most_commits[1]]
+    list_Most_Commits += [(user_list[name].most_commits[1])]
     list_Least_Commits += [user_list[name].least_commits[1]]
     #SOC
     list_Most_Changes += [user_list[name].most_changes[0]]
