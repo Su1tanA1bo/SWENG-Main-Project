@@ -7,25 +7,56 @@
 ##*************************************************************************
 
 from complexity import run_Complexity_Checker
-from data_structures import Commit, FileContents, UserStats
+from data_structures import *
 from queries import *
-from requests import post
 from radon.complexity import cc_rank
+from requests import post
+
 
 GROUP_STATS = "All Users"
 Repo_Complexity_Score = 0
-user_list = {}
-# user_list = {GROUP_STATS: UserStats()}
+user_list = {GROUP_STATS: UserStats()}
 latest_commit = []
+branch_names = []
 
 
-# first api call - gets a list of commits and information about them
-def run_commit_query(owner, repo, branch, auth):
+def run_branch_query(owner, repo, auth):
+    global branch_names
+
     # stores the authorisation token and accept
     headers = {
         "Authorization": "token " + auth,
         "Accept": "application/vnd.github+json",
     }
+
+    # for pagination
+    has_next_page = True
+    end_cursor = None
+
+    # query can only fetch 100 commits, so keeps fetching until all commits fetched
+    while has_next_page:
+
+        # gets the query and performs call, on subsequent call passes in end_cursor for pagination
+        query = get_branch_query(owner, repo, end_cursor)
+        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        # trims the result of the api call to remove unnecessary nesting
+        trimmed_request = request.json()["data"]["repository"]["refs"]
+
+        # determines if all commits have been fetched
+        has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
+        if has_next_page:
+            end_cursor = trimmed_request["pageInfo"]["endCursor"]
+
+        # if api call was successful, adds the commits to the commit list
+        if request.status_code == 200:
+            for node in trimmed_request["nodes"]:
+                branch_names.append(node["name"])
+        else:
+            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
+
+# first api call - gets a list of commits and information about them
+def run_commit_query(owner, repo, branch, headers):
 
     # stores the list of commits
     commit_list = []
@@ -57,12 +88,7 @@ def run_commit_query(owner, repo, branch, auth):
 
 
 # second api call - text from every file in latest commit
-def run_text_query(owner, repo, branch, auth):
-    # stores the authorisation token and accept
-    headers = {
-        "Authorization": "token " + auth,
-        "Accept": "application/vnd.github+json",
-    }
+def run_text_query(owner, repo, branch, headers):
 
     # gets the query and performs call
     query = get_text_query(owner, repo, branch)
@@ -78,12 +104,7 @@ def run_text_query(owner, repo, branch, auth):
 
 
 # final api call - blames each line of code in every file of the latest commit
-def run_blame_query(owner, repo, branch, auth):
-    # stores the authorisation token and accept
-    headers = {
-        "Authorization": "token " + auth,
-        "Accept": "application/vnd.github+json",
-    }
+def run_blame_query(owner, repo, branch, headers):
 
     # iterates over the files stored in latest_commit - a separate call must be done for each file
     for file in latest_commit:
@@ -151,7 +172,7 @@ def commit_info(commit_list):
         else:
             user_list[name] = UserStats(commit)
         # adds the commit to the "Group" user - represents group stats
-        # user_list[GROUP_STATS].add(commit)
+        user_list[GROUP_STATS].add(commit)
 
 
 # recursively traverses the tree of files storing each file in a fileContents object
@@ -176,11 +197,11 @@ def assign_blame(blame_list):
     for blame in blame_list:
         lines = blame["endingLine"] - blame["startingLine"] + 1
         user_list[blame["commit"]["author"]["name"]].add_to_lines(lines)
-        # user_list[GROUP_STATS].add_to_lines(lines)
+        user_list[GROUP_STATS].add_to_lines(lines)
 
     # calculates the percentage of code each user owns
-    # for name in user_list:
-    #     user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
+    for name in user_list:
+        user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
 
 
 # prints the results to the console
@@ -203,18 +224,24 @@ def print_stats():
               f"Lines written: {user_list[name].lines_written}\n"
               f"Percentage ownership: {user_list[name].code_ownership}%")
 
-        # if name == GROUP_STATS:
-        #     print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
-        # else:
-        print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
+        if name == GROUP_STATS:
+            print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
+        else:
+            print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
         # user_list[name].print_commits()
 
 
 # gathers all the api calls into a single function
 def get_stats(owner, repo, branch, auth):
-    run_commit_query(owner, repo, branch, auth)
-    run_text_query(owner, repo, branch, auth)
-    run_blame_query(owner, repo, branch, auth)
+
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+
+    run_commit_query(owner, repo, branch, headers)
+    run_text_query(owner, repo, branch, headers)
+    run_blame_query(owner, repo, branch, headers)
     # resolve the stats for each user
     for name in user_list:
         user_list[name].resolve_stats()
@@ -226,6 +253,8 @@ if __name__ == '__main__':
     repo = "SWENG-Main-Project"
     branch = "api-calls"
     auth = "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"
+
+    run_branch_query(owner, repo, auth)
 
     print(f"Gathering data from {repo}, branch {branch}...")
     get_stats(owner, repo, branch, auth)
