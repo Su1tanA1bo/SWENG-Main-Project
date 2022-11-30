@@ -36,6 +36,7 @@ list_Least_Commits = []
 #SOC List objects
 list_Most_Changes = []
 list_Average_Number_Changes = []
+list_Days_Committed = []
 
 #LOC List Objects
 list_Lines_Written = []
@@ -54,6 +55,7 @@ for name in user_list:
     #SOC
     list_Most_Changes += [user_list[name].most_changes[0]]
     list_Average_Number_Changes += [user_list[name].avg_no_changes]
+    list_Days_Committed += [user_list[name].days_committed]
     #LOC
     list_Lines_Written += [user_list[name].lines_written]
     list_Percentage_Ownership += [user_list[name].code_ownership]
@@ -120,7 +122,7 @@ def FOC():
 @bp.route('/SOC')
 @login_required
 def SOC():
-    return render_template("SOC.html", listOfUsers=list_user, listOfMostChanges=list_Most_Changes, listOfAverageChanges=list_Average_Number_Changes)
+    return render_template("SOC.html", listOfUsers=list_user, listOfMostChanges=list_Most_Changes, listOfAverageChanges=list_Average_Number_Changes, listOfDaysCommitted=list_Days_Committed)
 
 @bp.route('/LOC')
 @login_required

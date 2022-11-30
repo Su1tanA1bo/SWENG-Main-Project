@@ -17,6 +17,7 @@
    <meta name="listOfMostChanges" content="{{listOfMostChanges}}">
    <meta name="listOfAverageChanges" content="{{listOfAverageChanges}}">
    <meta name="listOfLargestCommit" content="{{listOfLargestCommit}}">
+   <meta name="listOfDaysCommitted" content="{{listOfDaysCommitted}}">
 
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -26,7 +27,7 @@
   var listOfMostChanges = document.getElementsByName('listOfMostChanges')[0].content
   var listOfAverageChanges = document.getElementsByName('listOfAverageChanges')[0].content
   var listOfLargestCommit = document.getElementsByName('listOfLargestCommit')[0].content
-
+  var listOfDaysCommitted = document.getElementsByName('listOfDaysCommitted')[0].content
   // function to convert the inputed lists into a formatthat can be graphed
   function inputStringListToGraphFormat(String) {
     String = String.replace("[", "");
@@ -42,7 +43,7 @@
   var graphListOfMostChanges= inputStringListToGraphFormat(listOfMostChanges);
   var graphListOfAverageChanges = inputStringListToGraphFormat(listOfAverageChanges);
   var graphListOfLargestCommit = inputStringListToGraphFormat(listOfLargestCommit);
-
+  var graphListOfDaysCommitted = inputStringListToGraphFormat(listOfDaysCommitted)
   // graph info and variale initialisation 
   const ftx = document.getElementById('myChart');
   new Chart(ftx, {
@@ -55,6 +56,11 @@
           type: 'bar',
           label: 'Average Commit Size',
           data: graphListOfAverageChanges,
+        },
+        {
+          type: 'bar',
+          label: 'Number of Days Committed',
+          data: graphListOfDaysCommitted,
         }
       ],
         labels: graphListOfUsers
