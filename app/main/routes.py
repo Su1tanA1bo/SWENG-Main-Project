@@ -24,17 +24,42 @@ from query import *
 
 get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
 
+#User List Object
 list_user = []
+
+#FOC List objects
 list_total_commits = []
 list_Avg_Frq = []
 list_Most_Commits = []
 list_Least_Commits = []
+
+#SOC List objects
+list_Most_Changes = []
+list_Average_Number_Changes = []
+
+#LOC List Objects
+list_Lines_Written = []
+list_Percentage_Ownership = []
+list_Number_Of_Most_Changes = []
+list_Number_Of_Least_Changes = []
+
+#Add commit values to above lists
 for name in user_list:
+    #FOC
     list_user += [name]
     list_total_commits += [user_list[name].total_commits()]
     list_Avg_Frq += [user_list[name].avg_freq]
     list_Most_Commits += [user_list[name].most_commits[1]]
     list_Least_Commits += [user_list[name].least_commits[1]]
+    #SOC
+    list_Most_Changes += [user_list[name].most_changes[0]]
+    list_Average_Number_Changes += [user_list[name].avg_no_changes]
+    #LOC
+    list_Lines_Written += [user_list[name].lines_written]
+    list_Percentage_Ownership += [user_list[name].code_ownership]
+    list_Number_Of_Most_Changes += [user_list[name].most_changes[0]]
+    list_Number_Of_Least_Changes += [user_list[name].least_changes[0]]
+
    
 
 #function for updating time user was last seen at. Currently in UTC, will update later
@@ -95,13 +120,12 @@ def FOC():
 @bp.route('/SOC')
 @login_required
 def SOC():
-    
-    return render_template("SOC.html")
+    return render_template("SOC.html", listOfUsers=list_user, listOfMostChanges=list_Most_Changes, listOfAverageChanges=list_Average_Number_Changes)
 
 @bp.route('/LOC')
 @login_required
 def LOC():
- return render_template("LOC.html")
+ return render_template("LOC.html", listOfUsers=list_user, listOfLinesWritten=list_Lines_Written, listOfPercentageOwnership=list_Percentage_Ownership, listOfMostChanges=list_Number_Of_Most_Changes, listOfLeastChanges=list_Number_Of_Least_Changes)
 
 @bp.route('/CC')
 @login_required

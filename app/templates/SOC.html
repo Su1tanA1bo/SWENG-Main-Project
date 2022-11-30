@@ -9,25 +9,60 @@
  <body>
  {{myUser}}
    <div>
-     <canvas id="myChart-2" width="900" height="400"></canvas>
+     <canvas id="myChart" width="900" height="400"></canvas>
    </div>
+
+   <meta name="userList" content="{{listOfUsers}}">
+   <meta name="listOfAverageCommitSize" content="{{listOfAverageCommitSize}}">
+   <meta name="listOfMostChanges" content="{{listOfMostChanges}}">
+   <meta name="listOfAverageChanges" content="{{listOfAverageChanges}}">
+   <meta name="listOfLargestCommit" content="{{listOfLargestCommit}}">
+
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
- const ctx = document.getElementById('myChart-2');
-  new Chart(ctx, {
-    type: 'pie',
+  //inputed list loading 
+  var listOfUsers = document.getElementsByName('userList')[0].content
+  var listOfAverageCommitSize = document.getElementsByName('listOfAverageCommitSize')[0].content
+  var listOfMostChanges = document.getElementsByName('listOfMostChanges')[0].content
+  var listOfAverageChanges = document.getElementsByName('listOfAverageChanges')[0].content
+  var listOfLargestCommit = document.getElementsByName('listOfLargestCommit')[0].content
+
+  // function to convert the inputed lists into a formatthat can be graphed
+  function inputStringListToGraphFormat(String) {
+    String = String.replace("[", "");
+    String = String.replace("]", "");
+    var splitString = String.split(",")
+    console.log(splitString)
+    return splitString;
+  }
+
+  // list of vaules in graphable format
+  var graphListOfUsers = inputStringListToGraphFormat(listOfUsers);
+  var graphListOfAverageCommitSize = inputStringListToGraphFormat(listOfAverageCommitSize);
+  var graphListOfMostChanges= inputStringListToGraphFormat(listOfMostChanges);
+  var graphListOfAverageChanges = inputStringListToGraphFormat(listOfAverageChanges);
+  var graphListOfLargestCommit = inputStringListToGraphFormat(listOfLargestCommit);
+
+  // graph info and variale initialisation 
+  const ftx = document.getElementById('myChart');
+  new Chart(ftx, {
     data: {
-      labels: ['Measure-1', 'Measure-2', 'Measure-3', 'Measure-4', 'Measure-5', 'Measure-6'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
+        datasets: [ {
+          type: 'bar',
+          label: 'Largest Single Commit',
+          data: graphListOfMostChanges,
+        }, {
+          type: 'bar',
+          label: 'Average Commit Size',
+          data: graphListOfAverageChanges,
+        }
+      ],
+        labels: graphListOfUsers
     },
     options: {
-      responsive: false
+      responsive: true
     }
-  });
+});
 </script>
 
 

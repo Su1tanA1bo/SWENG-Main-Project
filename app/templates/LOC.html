@@ -9,25 +9,71 @@
  <body>
  
    <div>
-     <canvas id="myChart-2" width="900" height="400"></canvas>
+     <canvas id="myChart" width="900" height="400"></canvas>
    </div>
+
+   <meta name="userList" content="{{listOfUsers}}">
+   <meta name="listOfLinesWritten" content="{{listOfLinesWritten}}">
+   <meta name="listOfPercentageOwnership" content="{{listOfPercentageOwnership}}">
+   <meta name="listOfMostChanges" content="{{listOfMostChanges}}">
+   <meta name="listOfLeastChanges" content="{{listOfLeastChanges}}">
+
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
- const ctx = document.getElementById('myChart-2');
-  new Chart(ctx, {
-    type: 'line',
+//inputed list loading 
+var listOfUsers = document.getElementsByName('userList')[0].content
+  var listOfLinesWritten = document.getElementsByName('listOfLinesWritten')[0].content
+  var listOfPercentageOwnership = document.getElementsByName('listOfPercentageOwnership')[0].content
+  var listOfMostChanges = document.getElementsByName('listOfMostChanges')[0].content
+  var listOfLeastChanges = document.getElementsByName('listOfLeastChanges')[0].content
+
+  // function to convert the inputed lists into a format that can be graphed
+  function inputStringListToGraphFormat(String) {
+    String = String.replace("[", "");
+    String = String.replace("]", "");
+    var splitString = String.split(",")
+    console.log(splitString)
+    return splitString;
+  }
+
+  // remove 'univeral' from percentage list
+  graphListOfPercentageOwnership.splice(0, 1);
+
+  // list of vaules in graphable format
+  var graphListOfUsers = inputStringListToGraphFormat(listOfUsers);
+  var graphListOfLinesWritten = inputStringListToGraphFormat(listOfLinesWritten);
+  var graphListOfPercentageOwnership = inputStringListToGraphFormat(listOfPercentageOwnership);
+  var graphListOfMostChanges = inputStringListToGraphFormat(listOfMostChanges);
+  var graphListOfLeastChanges = inputStringListToGraphFormat(listOfLeastChanges);
+
+  // graph info and variale initialisation 
+  const ftx = document.getElementById('myChart');
+  new Chart(ftx, {
     data: {
-      labels: ['Measure-1', 'Measure-2', 'Measure-3', 'Measure-4', 'Measure-5', 'Measure-6'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
+        datasets: [{
+          type: 'bar',
+          label: 'Lines Written',
+          data: graphListOfLinesWritten,
+        }, {
+          type: 'doughnut',
+          label: 'Percentage Code Ownership',
+          data: graphListOfPercentageOwnership,
+        }, {
+          type: 'bar',
+          label: 'Most Changes',
+          data: graphListOfMostChanges,
+        }, {
+          type: 'bar',
+          label: 'Least changes',
+          data: graphListOfLeastChanges,
+        }
+      ],
+        labels: graphListOfUsers
     },
     options: {
-      responsive: false
+      responsive: true
     }
-  });
+});
 </script>
 
 
