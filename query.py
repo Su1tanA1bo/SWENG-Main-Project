@@ -6,10 +6,8 @@
 #   @Creation Date: 22/11/2022
 ##*************************************************************************
 
-from app import db
 from complexity import run_Complexity_Checker
-from app.models import Commit, UserStats
-from file_contents import FileContents
+from data_structures import Commit, FileContents, UserStats
 from queries import *
 from requests import post
 from radon.complexity import cc_rank
@@ -100,6 +98,7 @@ def run_blame_query(owner, repo, branch, auth):
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
+
 def get_Complexity_Values():
     #   will return repo complexity score and individual complexity score of each file. 
     #   dictionary with individual file complexity scores will be represented like:
@@ -123,8 +122,8 @@ def get_Complexity_Values():
     global Repo_Complexity_Score
     Repo_Complexity_Score = total_complexity_score/number_of_functions_scanned 
     Repo_Complexity_Rank = cc_rank(Repo_Complexity_Score) 
-    #print(f"Repo Complexity Score = {Repo_Complexity_Score}")
-    #print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
+    # print(f"Repo Complexity Score = {Repo_Complexity_Score}")
+    # print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
     
     
 # assigns the info about the commits to each user
@@ -144,9 +143,6 @@ def commit_info(commit_list):
         additions = commit_json["node"]["additions"]
         deletions = commit_json["node"]["deletions"]
         commit = Commit(name, sha, message, day, time, additions, deletions)
-
-        # add each commit to the database
-        db.session.add(commit)
 
         # adds the commit to a user if it exists, or makes a new user with the commit if it doesn't
         if name in user_list:
@@ -218,12 +214,9 @@ def get_stats(owner, repo, branch, auth):
     run_commit_query(owner, repo, branch, auth)
     run_text_query(owner, repo, branch, auth)
     run_blame_query(owner, repo, branch, auth)
-    # resolve the stats for each user and add it to the database
+    # resolve the stats for each user
     for name in user_list:
         user_list[name].resolve_stats()
-        db.session.add(user_list[name])
-    # commit the info to the database
-    db.session.commit()
 
 
 # main function for testing code
