@@ -1,67 +1,7 @@
-2022-11-22 16:53:10,784 ERROR: Exception on / [GET] [in C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py:1741]
-Traceback (most recent call last):
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py", line 2525, in wsgi_app
-    response = self.full_dispatch_request()
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py", line 1796, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
-    return current_app.ensure_sync(func)(*args, **kwargs)
-  File "C:\Users\prana\OneDrive\Desktop\SWENG main project\app\main\routes.py", line 36, in index
-    return render_template('index.html', title='Home')
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\templating.py", line 147, in render_template
-    return _render(app, template, context)
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\templating.py", line 130, in _render
-    rv = template.render(context)
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\jinja2\environment.py", line 1301, in render
-    self.environment.handle_exception()
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\jinja2\environment.py", line 936, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "C:\Users\prana\OneDrive\Desktop\SWENG main project\app\templates\index.html", line 1, in top-level template code
-    {% extends "base.html" %}
-  File "C:\Users\prana\OneDrive\Desktop\SWENG main project\app\templates\base.html", line 1, in top-level template code
-    {% extends 'bootstrap/base.html' %}
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 4, in block 'doc'
-    {%- block html %}
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 23, in block 'html'
-    {% block body -%}
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask_bootstrap\templates\bootstrap\base.html", line 26, in block 'body'
-    {% block content -%}
-  File "C:\Users\prana\OneDrive\Desktop\SWENG main project\app\templates\base.html", line 44, in block 'content'
-    {% block app_content %}{% endblock %}
-  File "C:\Users\prana\OneDrive\Desktop\SWENG main project\app\templates\index.html", line 26, in block 'app_content'
-    <a href="{{ url_for('FOC')}}" class="btn btn-outline-success">View</a>
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py", line 2031, in url_for
-    return self.handle_url_build_error(error, endpoint, values)
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\flask\app.py", line 2020, in url_for
-    rv = url_adapter.build(  # type: ignore[union-attr]
-  File "C:\Users\prana\anaconda3\envs\sweng\lib\site-packages\werkzeug\routing\map.py", line 917, in build
-    raise BuildError(endpoint, values, method, self)
-werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'FOC'. Did you mean 'main.FOC' instead?
-2022-11-22 16:53:30,362 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 18:56:48,954 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:03:01,516 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:04:16,199 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:09:12,720 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:17:17,989 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:21:11,866 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:24:30,605 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:26:29,074 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:26:51,262 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 19:35:34,728 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-22 20:11:59,317 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\SWENG main project\app\__init__.py:87]
-2022-11-24 19:14:52,460 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:26:11,624 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:47:28,586 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:50:44,581 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:51:30,246 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:52:09,013 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:52:12,182 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+2022-11-24 20:46:05,562 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 20:46:10,484 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:15:09,383 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:15:16,436 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
 Traceback (most recent call last):
   File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
     response = self.full_dispatch_request()
@@ -73,38 +13,112 @@ Traceback (most recent call last):
     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
   File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
     return current_app.ensure_sync(func)(*args, **kwargs)
-  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 74, in FOC
-    return render_template("FOC.html", user=datauser)
-  File "C:\Users\prana\anaconda3\lib\site-packages\flask\templating.py", line 146, in render_template
-    template = app.jinja_env.get_or_select_template(template_name_or_list)
-  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 1081, in get_or_select_template
-    return self.get_template(template_name_or_list, parent, globals)
-  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 1010, in get_template
-    return self._load_template(name, globals)
-  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 969, in _load_template
-    template = self.loader.load(self, name, self.make_globals(globals))
-  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\loaders.py", line 138, in load
-    code = environment.compile(source, name, filename)
-  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 768, in compile
-    self.handle_exception(source=source_hint)
-  File "C:\Users\prana\anaconda3\lib\site-packages\jinja2\environment.py", line 936, in handle_exception
-    raise rewrite_traceback_stack(source=source)
-  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\templates\FOC.html", line 11, in template
-    {%print({{user}})%}
-jinja2.exceptions.TemplateSyntaxError: expected token ':', got '}'
-2022-11-24 19:54:34,924 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:55:19,670 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:56:20,372 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:57:03,159 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 19:58:02,559 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:02:01,045 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:10:15,915 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:11:36,177 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:11:55,857 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:12:59,322 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:13:35,528 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:24:04,064 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:36:06,934 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:37:30,372 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:40:12,512 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
-2022-11-24 20:41:30,426 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 75, in FOC
+    return render_template("FOC.html", data=user_list[2])
+KeyError: 2
+2022-11-24 21:15:19,059 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 75, in FOC
+    return render_template("FOC.html", data=user_list[2])
+KeyError: 2
+2022-11-24 21:15:44,381 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:15:55,062 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 75, in FOC
+    return render_template("FOC.html", data=user_list[2])
+KeyError: 2
+2022-11-24 21:17:34,069 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:17:58,435 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:19:27,916 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:19:31,843 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 75, in FOC
+    return render_template("FOC.html", data=list[2].commits)
+KeyError: 2
+2022-11-24 21:20:13,549 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:22:45,041 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:22:48,267 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 75, in FOC
+    return render_template("FOC.html", data=list["taylorj8"].commits)
+KeyError: 'taylorj8'
+2022-11-24 21:23:13,240 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:24:03,792 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 21:25:02,796 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:19:37,146 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:29:19,332 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:29:46,446 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:32:23,934 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:56:01,119 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:56:14,603 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 76, in FOC
+    data=list["Universal"].avg_no_changes
+KeyError: 'Universal'
+2022-11-24 22:57:14,643 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]
+2022-11-24 22:57:30,023 ERROR: Exception on /FOC [GET] [in C:\Users\prana\anaconda3\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "C:\Users\prana\anaconda3\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "C:\Users\prana\OneDrive\Desktop\Dummy\app\main\routes.py", line 76, in FOC
+    data=list["Universal"].avg_freq
+KeyError: 'Universal'
+2022-11-24 22:59:28,763 INFO: Main Project 3 startup [in C:\Users\prana\OneDrive\Desktop\Dummy\app\__init__.py:87]

@@ -81,3 +81,19 @@ Traceback (most recent call last):
     raise exception
 sqlalchemy.orm.exc.UnmappedInstanceError: Class 'commit.Commit' is not mapped
 2022-11-29 10:49:55,517 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
+2022-11-30 14:35:30,917 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
+2022-11-30 14:36:57,771 ERROR: Exception on /SOC [GET] [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py:1741]
+Traceback (most recent call last):
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 2525, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1822, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1820, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask\app.py", line 1796, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\venv\lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\main\routes.py", line 121, in SOC
+    list_Most_Commits += [user_list[name].most_commits[1]]
+TypeError: 'int' object is not subscriptable
