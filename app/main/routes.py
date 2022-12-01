@@ -67,8 +67,6 @@ def reset_all():
     list_Number_Of_Most_Changes = []
     list_Number_Of_Least_Changes = []
 
-    reset_stats()
-
 
 # function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
@@ -92,9 +90,8 @@ def index():
         branchname = request.form.get('branchname')
         print("hello")
 
-        reset_all()
-        run_branch_query(owner, reponame, "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")
-        get_stats(owner, reponame, branchname, "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")
+        branch_names = run_branch_query(owner, reponame, "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")
+        user_list, latest_commit, Repo_Complexity_Score = get_stats(owner, reponame, branchname, "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")
 
         print("hello")
         # Add commit values to above lists
