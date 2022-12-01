@@ -273,9 +273,9 @@ if __name__ == '__main__':
     get_Complexity_Values()
     print_stats()
 
-    run_branch_query(owner, repo, auth)
-
-    print(f"Gathering data from {repo}, branch {branch} again...")
-    get_stats(owner, repo, branch, auth)
-    get_Complexity_Values()
-    print_stats()
+    # run_branch_query(owner, repo, auth)
+    #
+    # print(f"Gathering data from {repo}, branch {branch} again...")
+    # get_stats(owner, repo, branch, auth)
+    # get_Complexity_Values()
+    # print_stats()
