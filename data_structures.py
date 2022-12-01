@@ -31,22 +31,22 @@ class UserStats:
 
         # most and least additions/deletions/changes
         # tuple containing int and a dict representing the commit
-        self.most_additions = (-1, None)
-        self.least_additions = (-1, None)
-        self.most_deletions = (-1, None)
-        self.least_deletions = (-1, None)
-        self.most_changes = (-1, None)
-        self.least_changes = (-1, None)
+        self.most_additions = (0, None)
+        self.least_additions = (0, None)
+        self.most_deletions = (0, None)
+        self.least_deletions = (0, None)
+        self.most_changes = (0, None)
+        self.least_changes = (0, None)
 
         # average number of additions/deletions/changes
         # total commits / days committed
-        self.avg_no_additions = -1
-        self.avg_no_deletions = -1
-        self.avg_no_changes = -1
+        self.avg_no_additions = 0
+        self.avg_no_deletions = 0
+        self.avg_no_changes = 0
 
         # blame info
-        self.lines_written = -1
-        self.code_ownership = -1
+        self.lines_written = 0
+        self.code_ownership = 0
 
     # add a commit to commits list
     def add(self, commit):
