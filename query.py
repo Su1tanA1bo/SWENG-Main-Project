@@ -223,17 +223,6 @@ def print_stats(user_list, latest_commit, branch_names):
         # user_list[name].print_commits()
 
 
-# resets the stats
-# def reset_stats():
-#     global Repo_Complexity_Score, user_list, latest_commit, branch_names
-#
-#     user_list = {GROUP_STATS: UserStats()}
-#     print(user_list)
-#     branch_names = []
-#     latest_commit = []
-#     Repo_Complexity_Score = 0
-
-
 # gathers all the api calls into a single function
 def get_stats(owner, repo, branch, auth):
     user_list = {GROUP_STATS: UserStats()}
@@ -269,9 +258,13 @@ if __name__ == '__main__':
     # get_Complexity_Values(l_c, r_c)
     print_stats(u_list, l_c, b_n)
 
+    owner = "Su1tanA1bo"
+    repo = "SWENG-Main-Project"
+    branch = "api-calls"
+
     b_n = run_branch_query(owner, repo, auth)
 
     print(f"Gathering data from {repo}, branch {branch} again...")
-    get_stats(owner, repo, branch, auth)
+    u_list, l_c, r_c = get_stats(owner, repo, branch, auth)
     # get_Complexity_Values()
     print_stats(u_list, l_c, b_n)

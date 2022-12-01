@@ -43,31 +43,6 @@ list_Number_Of_Most_Changes = []
 list_Number_Of_Least_Changes = []
 
 
-# resets all the stats
-def reset_all():
-    global list_user, list_total_commits, list_Avg_Frq, list_Most_Commits, list_Least_Commits
-    global list_Most_Changes, list_Average_Number_Changes, list_Days_Committed
-    global list_Lines_Written, list_Percentage_Ownership, list_Number_Of_Most_Changes, list_Number_Of_Least_Changes
-
-    list_user = []
-    # FOC List objects
-    list_total_commits = []
-    list_Avg_Frq = []
-    list_Most_Commits = []
-    list_Least_Commits = []
-
-    # SOC List objects
-    list_Most_Changes = []
-    list_Average_Number_Changes = []
-    list_Days_Committed = []
-
-    # LOC List Objects
-    list_Lines_Written = []
-    list_Percentage_Ownership = []
-    list_Number_Of_Most_Changes = []
-    list_Number_Of_Least_Changes = []
-
-
 # function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
 def before_request():
