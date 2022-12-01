@@ -14,7 +14,8 @@
    <h3> Percentge Ownership of: </h3>
    <div>
      <canvas id="myChart2" width="1000" height="500"></canvas>
-       </div>
+    </div>
+
    <meta name="userList" content="{{listOfUsers}}">
    <meta name="listOfLinesWritten" content="{{listOfLinesWritten}}">
    <meta name="listOfPercentageOwnership" content="{{listOfPercentageOwnership}}">
@@ -24,7 +25,7 @@
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 //inputed list loading 
-var listOfUsers = document.getElementsByName('userList')[0].content
+  var listOfUsers = document.getElementsByName('userList')[0].content
   var listOfLinesWritten = document.getElementsByName('listOfLinesWritten')[0].content
   var listOfPercentageOwnership = document.getElementsByName('listOfPercentageOwnership')[0].content
   var listOfMostChanges = document.getElementsByName('listOfMostChanges')[0].content
@@ -38,8 +39,6 @@ var listOfUsers = document.getElementsByName('userList')[0].content
     console.log(splitString)
     return splitString;
   }
-
-
 
   // list of vaules in graphable format
   var graphListOfUsers = inputStringListToGraphFormat(listOfUsers);
@@ -58,7 +57,7 @@ var listOfUsers = document.getElementsByName('userList')[0].content
   const gtx = document.getElementById('myChart2');
 
  new Chart(gtx, {
-    type: 'pie',
+    type: 'polarArea',
     data: {
     labels: graphListOfUsers1,
         datasets: [{

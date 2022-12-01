@@ -11,21 +11,54 @@
    <div>
      <canvas id="myChart-2" width="900" height="400"></canvas>
    </div>
+
+   <meta name="listOfFileNames" content="{{listOfFileNames}}">
+   <meta name="totalRepoCCScore" content="{{totalRepoCCScore}}">
+   <meta name="numberOfFunctionsScanned" content="{{numberOfFunctionsScanned}}">
+   <meta name="listOfComplexityValues" content="{{listOfComplexityValues}}">
+   <meta name="listOfComplexityRanks" content="{{listOfComplexityRanks}}">
+
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+  // loading inputed values into variables
+  var listOfFileNames = document.getElementsByName('listOfFileNames')[0].content
+  var totalRepoCCScore = document.getElementsByName('totalRepoCCScore')[0].content
+  var numberOfFunctionsScanned = document.getElementsByName('numberOfFunctionsScanned')[0].content
+  var listOfComplexityValues = document.getElementsByName('listOfComplexityValues')[0].content
+  var listOfComplexityRanks = document.getElementsByName('listOfComplexityRanks')[0].content
+
+  // function to convert the inputed lists into a format that can be graphed
+  function inputStringListToGraphFormat(String) {
+    String = String.replace("[", "");
+    String = String.replace("]", "");
+    var splitString = String.split(",")
+    console.log(splitString)
+    return splitString;
+  }
+
+  // changes lists into a format that can be graphed
+  var graphListOfFileNames = inputStringListToGraphFormat(listOfFileNames);
+  var graphListOfComplexityValues = inputStringListToGraphFormat(listOfComplexityValues);
+  var graphListOfComplexityRanks = inputStringListToGraphFormat(listOfComplexityRanks);
+
  const ctx = document.getElementById('myChart-2');
   new Chart(ctx, {
-    type: 'scatter',
     data: {
-      labels: ['Measure-1', 'Measure-2', 'Measure-3', 'Measure-4', 'Measure-5', 'Measure-6'],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1
-      }]
+        datasets: [{
+          type: 'bar',
+          label: 'Complexity score',
+          data: graphListOfComplexityValues,
+        }, {
+          type: 'bar',
+          label: 'Complexity Grade',
+          data: graphListOfComplexityRanks,
+        },
+      ],
+        labels: graphListOfFileNames
     },
     options: {
-      responsive: false
+      responsive: true
     }
   });
 </script>

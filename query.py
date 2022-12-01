@@ -18,6 +18,7 @@ Repo_Complexity_Score = 0
 user_list = {GROUP_STATS: UserStats()}
 latest_commit = []
 branch_names = []
+codeComplexityValuesDict = {}
 
 
 def run_branch_query(owner, repo, auth):
@@ -131,7 +132,7 @@ def get_Complexity_Values():
     number_of_functions_scanned = 0
     total_complexity_score = 0
     number_of_files_scanned = 0
-    codeComplexityValuesDict = {}
+    global codeComplexityValuesDict
     for file in latest_commit:
         if file.extension == ".py":
             complexityResults = run_Complexity_Checker(file)

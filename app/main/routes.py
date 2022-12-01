@@ -23,6 +23,7 @@ from query import *
 
 #function for updating time user was last seen at. Currently in UTC, will update later
 get_stats("Su1tanA1bo", "SWENG-Main-Project", "api-calls", "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")
+get_Complexity_Values()
 
 #User List Object
 list_user = []
@@ -44,6 +45,13 @@ list_Percentage_Ownership = []
 list_Number_Of_Most_Changes = []
 list_Number_Of_Least_Changes = []
 
+#CC List Objects
+total_repo_complexity_score = Repo_Complexity_Score
+number_of_functions_scanned = 0
+list_code_complexity_values = []
+list_code_complexity_ranks = []
+list_file_names = []
+
 #Add commit values to above lists
 for name in user_list:
     #FOC
@@ -61,6 +69,13 @@ for name in user_list:
     list_Percentage_Ownership += [user_list[name].code_ownership]
     list_Number_Of_Most_Changes += [user_list[name].most_changes[0]]
     list_Number_Of_Least_Changes += [user_list[name].least_changes[0]]
+
+for file in latest_commit:
+    if file.extension == ".py":
+        list_file_names += [file.name]
+        list_code_complexity_values += [codeComplexityValuesDict[file.name][0]]
+        list_code_complexity_ranks += [codeComplexityValuesDict[file.name][1]]
+
 
    
 
@@ -111,7 +126,7 @@ def LOC():
 @bp.route('/CC')
 @login_required
 def CC():
- return render_template("CC.html")
+ return render_template("CC.html", listOfFileNames=list_file_names, totalRepoCCScore=total_repo_complexity_score, numberOfFunctionsScanned=number_of_functions_scanned, listOfComplexityValues=list_code_complexity_values, listOfComplexityRanks=list_code_complexity_ranks)
 
 #function for handling edit profile page
 @bp.route('/edit_profile', methods=['GET', 'POST'])
