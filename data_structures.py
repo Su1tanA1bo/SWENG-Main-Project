@@ -24,29 +24,29 @@ class UserStats:
         # number of days code was committed
         self.days_committed = None
         # average frequency of commits each day that a commit was made
-        self.avg_freq = -1
+        self.avg_freq = 0
         # highest and lowest number of commits in one day
-        self.most_commits = -1
-        self.least_commits = -1
+        self.most_commits = 0
+        self.least_commits = 0
 
         # most and least additions/deletions/changes
         # tuple containing int and a dict representing the commit
-        self.most_additions = (-1, None)
-        self.least_additions = (-1, None)
-        self.most_deletions = (-1, None)
-        self.least_deletions = (-1, None)
-        self.most_changes = (-1, None)
+        self.most_additions = (0, None)
+        self.least_additions = (0, None)
+        self.most_deletions = (0, None)
+        self.least_deletions = (0, None)
+        self.most_changes = (0, None)
         self.least_changes = (-1, None)
 
         # average number of additions/deletions/changes
         # total commits / days committed
-        self.avg_no_additions = -1
-        self.avg_no_deletions = -1
-        self.avg_no_changes = -1
+        self.avg_no_additions = 0
+        self.avg_no_deletions = 0
+        self.avg_no_changes = 0
 
         # blame info
-        self.lines_written = -1
-        self.code_ownership = -1
+        self.lines_written = 0
+        self.code_ownership = 0
 
     # add a commit to commits list
     def add(self, commit):
