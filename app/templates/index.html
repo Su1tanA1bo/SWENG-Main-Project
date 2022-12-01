@@ -15,6 +15,57 @@
           height: 60vh;
           width: auto;
       }
+      .button {
+  position: relative;
+  padding: 8px 16px;
+  background-color: rgb(0, 255, 213);
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.button:active {
+  background: #007a63;
+}
+
+.button__text {
+  font: bold 20px "Quicksand", san-serif;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.button--loading .button__text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
   </style>
 <form action="" method="post">
         <label for="owner">owner:</label>
@@ -23,7 +74,7 @@
         <input type="text" id="reponame" name="reponame" placeholder="reponame">
         <label for="branchname">Branchname:</label>
         <input type="text" id="branchname" name="branchname" placeholder="branchname">
-        <button type="submit">Submit</button>
+        <button class="button" type="submit" onclick="this.classList.toggle('button--loading')">Submit</button>
     </form>
 <body style="background-color:rgb(35, 34, 34)" >
 <div class="row">
