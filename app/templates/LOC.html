@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block app_content %}
+
+<!doctype html>
+<html lang="en">
+ <head>
+   <meta charset="utf-8">
+ </head>
+ <body>
+ <h3>Lines of Code Data: </h3>
+   <div>
+     <canvas id="myChart" width="900" height="400"></canvas>
+   </div>
+   <h3> Percentge Ownership of: </h3>
+   <div>
+     <canvas id="myChart2" width="1000" height="500"></canvas>
+       </div>
+   <meta name="userList" content="{{listOfUsers}}">
+   <meta name="listOfLinesWritten" content="{{listOfLinesWritten}}">
+   <meta name="listOfPercentageOwnership" content="{{listOfPercentageOwnership}}">
+   <meta name="listOfMostChanges" content="{{listOfMostChanges}}">
+   <meta name="listOfLeastChanges" content="{{listOfLeastChanges}}">
+
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+//inputed list loading 
+var listOfUsers = document.getElementsByName('userList')[0].content
+  var listOfLinesWritten = document.getElementsByName('listOfLinesWritten')[0].content
+  var listOfPercentageOwnership = document.getElementsByName('listOfPercentageOwnership')[0].content
+  var listOfMostChanges = document.getElementsByName('listOfMostChanges')[0].content
+  var listOfLeastChanges = document.getElementsByName('listOfLeastChanges')[0].content
+
+  // function to convert the inputed lists into a format that can be graphed
+  function inputStringListToGraphFormat(String) {
+    String = String.replace("[", "");
+    String = String.replace("]", "");
+    var splitString = String.split(",")
+    console.log(splitString)
+    return splitString;
+  }
+
+
+
+  // list of vaules in graphable format
+  var graphListOfUsers = inputStringListToGraphFormat(listOfUsers);
+  var graphListOfLinesWritten = inputStringListToGraphFormat(listOfLinesWritten);
+  var graphListOfPercentageOwnership = inputStringListToGraphFormat(listOfPercentageOwnership);
+  var graphListOfMostChanges = inputStringListToGraphFormat(listOfMostChanges);
+  var graphListOfLeastChanges = inputStringListToGraphFormat(listOfLeastChanges);
+  var graphListOfUsers1 = graphListOfUsers
+  // remove 'univeral' from percentage list
+  graphListOfPercentageOwnership.splice(0, 1);
+   graphListOfUsers1.splice(0,1);
+  console.log("graphListOfPercentageOwnership"+ graphListOfPercentageOwnership);
+
+  // graph info and variale initialisation 
+  const ftx = document.getElementById('myChart');
+  const gtx = document.getElementById('myChart2');
+
+ new Chart(gtx, {
+    type: 'pie',
+    data: {
+    labels: graphListOfUsers1,
+        datasets: [{
+          label: 'percentage ownership',
+          data: graphListOfPercentageOwnership,
+          borderWidth: 1
+        }],
+
+    },
+    options: {
+      responsive: false
+    }
+    });
+  new Chart(ftx, {
+    data: {
+        datasets: [{
+          type: 'bar',
+          label: 'Lines Written',
+          data: graphListOfLinesWritten,
+        }, {
+          type: 'bar',
+          label: 'Most Changes',
+          data: graphListOfMostChanges,
+        }, {
+          type: 'bar',
+          label: 'Least changes',
+          data: graphListOfLeastChanges,
+        }
+      ],
+        labels: graphListOfUsers
+    },
+    options: {
+      responsive: true
+    }
+
+});
+</script>
+
+
+ </body>
+</html> 
+{% endblock %}
