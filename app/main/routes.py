@@ -43,6 +43,33 @@ list_Number_Of_Most_Changes = []
 list_Number_Of_Least_Changes = []
 
 
+# resets all the stats
+def reset_all():
+    global list_user, list_total_commits, list_Avg_Frq, list_Most_Commits, list_Least_Commits
+    global list_Most_Changes, list_Average_Number_Changes, list_Days_Committed
+    global list_Lines_Written, list_Percentage_Ownership, list_Number_Of_Most_Changes, list_Number_Of_Least_Changes
+
+    list_user = []
+    # FOC List objects
+    list_total_commits = []
+    list_Avg_Frq = []
+    list_Most_Commits = []
+    list_Least_Commits = []
+
+    # SOC List objects
+    list_Most_Changes = []
+    list_Average_Number_Changes = []
+    list_Days_Committed = []
+
+    # LOC List Objects
+    list_Lines_Written = []
+    list_Percentage_Ownership = []
+    list_Number_Of_Most_Changes = []
+    list_Number_Of_Least_Changes = []
+
+    reset_stats()
+
+
 # function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
 def before_request():
@@ -64,8 +91,11 @@ def index():
         reponame = request.form.get('reponame')
         branchname = request.form.get('branchname')
         print("hello")
+
+        reset_all()
         run_branch_query(owner, reponame, "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")
         get_stats(owner, reponame, branchname, "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")
+
         print("hello")
         # Add commit values to above lists
         global list_user
