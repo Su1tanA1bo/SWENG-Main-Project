@@ -14,10 +14,10 @@ from requests import post
 
 
 GROUP_STATS = "All Users"
-Repo_Complexity_Score = 0
 user_list = {GROUP_STATS: UserStats()}
-latest_commit = []
 branch_names = []
+latest_commit = []
+Repo_Complexity_Score = 0
 
 
 def run_branch_query(owner, repo, auth):
@@ -190,8 +190,7 @@ def store_files(tree, path=""):
 
 # assigns lines of code written to each user
 def assign_blame(blame_list):
-    global latest_commit
-    global user_list
+    global user_list, latest_commit
 
     # iterates through blame_list (json format) and gets the lines written by each user
     for blame in blame_list:
@@ -204,13 +203,14 @@ def assign_blame(blame_list):
         user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
 
 
-# prints the results to the console
+# prints the results to the console for testing purposes
 def print_stats():
+    print(f"\nBranches: {branch_names}\n")
     print("\nFiles:\n")
     for file in latest_commit:
         print(f"Name: {file.name}\n"
-              f"Path: {file.path}\n"
-              f"Contents:\n{file.contents}\n")
+              f"Path: {file.path}\n")
+              # f"Contents:\n{file.contents}\n")
         
     print("\nUsers:\n")
     for name in user_list:
@@ -231,8 +231,20 @@ def print_stats():
         # user_list[name].print_commits()
 
 
+# resets the stats
+def reset_stats():
+    global Repo_Complexity_Score, user_list, latest_commit, branch_names
+
+    user_list = {GROUP_STATS: UserStats()}
+    branch_names = []
+    latest_commit = []
+    Repo_Complexity_Score = 0
+
+
 # gathers all the api calls into a single function
 def get_stats(owner, repo, branch, auth):
+    # reset the stats before running queries in case data was fetched previously
+    reset_stats()
 
     headers = {
         "Authorization": "token " + auth,
@@ -257,6 +269,13 @@ if __name__ == '__main__':
     run_branch_query(owner, repo, auth)
 
     print(f"Gathering data from {repo}, branch {branch}...")
+    get_stats(owner, repo, branch, auth)
+    get_Complexity_Values()
+    print_stats()
+
+    run_branch_query(owner, repo, auth)
+
+    print(f"Gathering data from {repo}, branch {branch} again...")
     get_stats(owner, repo, branch, auth)
     get_Complexity_Values()
     print_stats()
