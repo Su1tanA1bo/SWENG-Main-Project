@@ -43,7 +43,11 @@ list_Number_Of_Most_Changes = []
 list_Number_Of_Least_Changes = []
 
 #CC List Objects
-list_of_file_names =[]
+list_of_file_names = []
+total_repo_CC_core = []
+number_Of_Functions_Scanned = []
+list_of_complexity_values = []
+list_of_complexity_ranks = []
 
 
 # function for updating time user was last seen at. Currently in UTC, will update later
@@ -86,6 +90,10 @@ def index():
         global list_Number_Of_Most_Changes
         global list_Number_Of_Least_Changes
         global list_of_file_names
+        global total_repo_CC_core
+        global number_Of_Functions_Scanned
+        global list_of_complexity_values
+        global list_of_complexity_ranks
         list_user = []
         # FOC List objects
         list_total_commits = []
@@ -103,6 +111,8 @@ def index():
         list_Percentage_Ownership = []
         list_Number_Of_Most_Changes = []
         list_Number_Of_Least_Changes = []
+
+
         for name in user_list:
             # FOC
             list_user += [name]
@@ -119,6 +129,14 @@ def index():
             list_Percentage_Ownership += [user_list[name].code_ownership]
             list_Number_Of_Most_Changes += [user_list[name].most_changes[0]]
             list_Number_Of_Least_Changes += [user_list[name].least_changes[0]]
+
+        total_repo_CC_core = [total_complexity_score]
+        number_Of_Functions_Scanned = [number_of_files_scanned]
+        for file in latest_commit:
+            #CC List Objects
+            list_of_file_names = [file.name]
+            list_of_complexity_values = [codeComplexityValuesDict[file.name][0]]
+            list_of_complexity_ranks = [codeComplexityValuesDict[file.name][0]]
 
     return render_template('index.html', title='Home')
 
@@ -160,7 +178,7 @@ def LOC():
 @bp.route('/CC')
 @login_required
 def CC():
-    return render_template("CC.html")
+    return render_template("CC.html", listOfFileNames=list_of_file_names, totalRepoCCScore=total_repo_CC_core, numberOfFunctionsScanned=number_Of_Functions_Scanned, listOfComplexityValues=list_of_complexity_values, listOfComplexityRanks=list_of_complexity_ranks)
 
 
 # function for handling edit profile page
