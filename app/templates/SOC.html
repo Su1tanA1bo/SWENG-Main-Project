@@ -7,67 +7,68 @@
    <meta charset="utf-8">
  </head>
  <body>
- {{myUser}}
+  <h3> Size if Commit Data: </h3>
    <div>
-     <canvas id="myChart-2" width="1000" height="500"></canvas>
+     <canvas id="myChart" width="900" height="400"></canvas>
    </div>
-    <meta name="userList" content="{{listOfUsers}}">
-    <meta name="largestCommitList" content="{{listOfLargestCommit}}">
-    <meta name="daysCommittedList" content="{{listOfDays}}">
-    <meta name="avgSizeList" content="{{listOfAvgSize}}">
+
+   <meta name="userList" content="{{listOfUsers}}">
+   <meta name="listOfAverageCommitSize" content="{{listOfAverageCommitSize}}">
+   <meta name="listOfMostChanges" content="{{listOfMostChanges}}">
+   <meta name="listOfAverageChanges" content="{{listOfAverageChanges}}">
+   <meta name="listOfLargestCommit" content="{{listOfLargestCommit}}">
+   <meta name="listOfDaysCommitted" content="{{listOfDaysCommitted}}">
+
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
- const ctx = document.getElementById('myChart-2');
+  //inputed list loading 
+  var listOfUsers = document.getElementsByName('userList')[0].content
+  var listOfAverageCommitSize = document.getElementsByName('listOfAverageCommitSize')[0].content
+  var listOfMostChanges = document.getElementsByName('listOfMostChanges')[0].content
+  var listOfAverageChanges = document.getElementsByName('listOfAverageChanges')[0].content
+  var listOfLargestCommit = document.getElementsByName('listOfLargestCommit')[0].content
+  var listOfDaysCommitted = document.getElementsByName('listOfDaysCommitted')[0].content
+  // function to convert the inputed lists into a formatthat can be graphed
+  function inputStringListToGraphFormat(String) {
+    String = String.replace("[", "");
+    String = String.replace("]", "");
+    var splitString = String.split(",")
+    console.log(splitString)
+    return splitString;
+  }
 
- var listOfUsers = document.getElementsByName('userList')[0].content
- var listOfLargestCommit = document.getElementsByName('largestCommitList')[0].content
- var listOfDays= document.getElementsByName('daysCommittedList')[0].content
- var listOfAvgSize= document.getElementsByName('avgSizeList')[0].content
-
-  listOfUsers = listOfUsers.replace("[", "");
-  listOfUsers = listOfUsers.replace("]", "");
-  var splitDataOflistOfUsers = listOfUsers.split(",")
-  console.log("splitDataOflistOfUsere: " + splitDataOflistOfUsers)
-
- listOfLargestCommit = listOfLargestCommit.replace("[", "");
- listOfLargestCommit = listOfLargestCommit.replace("]", "");
- var splitDataOflistOfLargestCommit = listOfLargestCommit.split(",")
- console.log("listOfLargestCommit: " + splitDataOflistOfLargestCommit)
-
- listOfDays = listOfDays.replace("[", "");
-  listOfDays = listOfDays.replace("]", "");
-  var splitDataOfDays = listOfDays.split(",")
-  console.log("splitDataOfDays: " + splitDataOfDays)
-
-listOfAvgSize = listOfAvgSize.replace("[", "");
-  listOfAvgSize = listOfAvgSize.replace("]", "");
-  var splitDataOfAvgSize = listOfAvgSize.split(",")
-  console.log("splitDataOfAvgSize: " + splitDataOfAvgSize)
-
-  new Chart(ctx, {
-     data: {
-        datasets: [{
+  // list of vaules in graphable format
+  var graphListOfUsers = inputStringListToGraphFormat(listOfUsers);
+  var graphListOfAverageCommitSize = inputStringListToGraphFormat(listOfAverageCommitSize);
+  var graphListOfMostChanges= inputStringListToGraphFormat(listOfMostChanges);
+  var graphListOfAverageChanges = inputStringListToGraphFormat(listOfAverageChanges);
+  var graphListOfLargestCommit = inputStringListToGraphFormat(listOfLargestCommit);
+  var graphListOfDaysCommitted = inputStringListToGraphFormat(listOfDaysCommitted)
+  // graph info and variale initialisation 
+  const ftx = document.getElementById('myChart');
+  new Chart(ftx, {
+    data: {
+        datasets: [ {
           type: 'bar',
-          label: 'Largest Commit changes',
-          data: splitDataOflistOfLargestCommit,
+          label: 'Largest Single Commit',
+          data: graphListOfMostChanges,
+        }, {
+          type: 'bar',
+          label: 'Average Commit Size',
+          data: graphListOfAverageChanges,
         },
         {
           type: 'bar',
-          label: 'Days Committed',
-          data: splitDataOfDays,
-        },
-        {
-          type: 'bar',
-          label: 'Avg Size of Changes',
-          data: splitDataOfAvgSize,
-        }],
-        labels: splitDataOflistOfUsers
-        },
+          label: 'Number of Days Committed',
+          data: graphListOfDaysCommitted,
+        }
+      ],
+        labels: graphListOfUsers
+    },
     options: {
-      responsive: false
+      responsive: true
     }
-
-  });
+});
 </script>
 
 

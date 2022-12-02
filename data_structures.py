@@ -1,10 +1,14 @@
 ##*************************************************************************
-#   data structure containing all relevant data about a user
+#   file contains data structure
+#   UserStats - stats about users
+#   Commit - information on commits
+#   FileContents - contents of the files
 #
 #   @author	 Jamie Taylor
 #   @Creation Date: 16/11/2022
 ##*************************************************************************
 
+from pathlib import Path
 from pprint import pprint
 
 
@@ -20,29 +24,29 @@ class UserStats:
         # number of days code was committed
         self.days_committed = None
         # average frequency of commits each day that a commit was made
-        self.avg_freq = -1
+        self.avg_freq = 0
         # highest and lowest number of commits in one day
-        self.most_commits = -1
-        self.least_commits = -1
+        self.most_commits = 0
+        self.least_commits = 0
 
         # most and least additions/deletions/changes
         # tuple containing int and a dict representing the commit
-        self.most_additions = (-1, None)
-        self.least_additions = (-1, None)
-        self.most_deletions = (-1, None)
-        self.least_deletions = (-1, None)
-        self.most_changes = (-1, None)
+        self.most_additions = (0, None)
+        self.least_additions = (0, None)
+        self.most_deletions = (0, None)
+        self.least_deletions = (0, None)
+        self.most_changes = (0, None)
         self.least_changes = (-1, None)
 
         # average number of additions/deletions/changes
         # total commits / days committed
-        self.avg_no_additions = -1
-        self.avg_no_deletions = -1
-        self.avg_no_changes = -1
+        self.avg_no_additions = 0
+        self.avg_no_deletions = 0
+        self.avg_no_changes = 0
 
         # blame info
-        self.lines_written = -1
-        self.code_ownership = -1
+        self.lines_written = 0
+        self.code_ownership = 0
 
     # add a commit to commits list
     def add(self, commit):
@@ -141,3 +145,56 @@ class UserStats:
     def print_commits(self):
         pprint(self.commits)
         print("\n")
+
+
+class Commit:
+
+    def __init__(self, name, sha, message, date, time, additions, deletions):
+        self.author = name
+        self.sha = sha
+        self.message = message
+
+        self.date = date
+        self.time = time
+
+        self.additions = additions
+        self.deletions = deletions
+        self.changes = additions + deletions
+
+    def to_dict(self):
+        return {
+            "author": self.author,
+            "sha": self.sha,
+            "message": self.message,
+            "date": self.date,
+            "time": self.time,
+            "additions": self.additions,
+            "deletions": self.deletions,
+            "changes": self.additions + self.deletions
+        }
+
+    def __repr__(self):
+        return f"Author: {self.author}\n" \
+               f"Message: {self.message}\n" \
+               f"Sha: {self.sha}\n" \
+               f"Additions: {self.additions}\n" \
+               f"Deletions: {self.deletions}"
+
+
+class FileContents:
+
+    def __init__(self, name, path, contents):
+        self.name = name
+        self.path = path + name
+        self.contents = contents
+        self.extension = Path(name).suffix
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "contents": self.contents
+        }
+
+    def __repr__(self):
+        return f"Name: {self.name}\n" \
+               f"Contents: {self.contents}\n"

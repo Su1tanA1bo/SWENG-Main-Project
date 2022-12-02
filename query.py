@@ -6,29 +6,56 @@
 #   @Creation Date: 22/11/2022
 ##*************************************************************************
 
-from app import db
 from complexity import run_Complexity_Checker
-from commit import Commit
-from file_contents import FileContents
+from data_structures import *
 from queries import *
-from requests import post
-from user import UserStats
 from radon.complexity import cc_rank
+from requests import post
 
 GROUP_STATS = "All Users"
-Repo_Complexity_Score = 0
-user_list = {GROUP_STATS: UserStats()}
-latest_commit = []
+global codeComplexityValuesDict
+codeComplexityValuesDict = {}
 
+def run_branch_query(owner, repo, auth):
+    branch_names = []
 
-# first api call - gets a list of commits and information about them
-def run_commit_query(owner, repo, branch, auth):
     # stores the authorisation token and accept
     headers = {
         "Authorization": "token " + auth,
         "Accept": "application/vnd.github+json",
     }
 
+    # for pagination
+    has_next_page = True
+    end_cursor = None
+
+    # query can only fetch 100 commits, so keeps fetching until all commits fetched
+    while has_next_page:
+
+        # gets the query and performs call, on subsequent call passes in end_cursor for pagination
+        query = get_branch_query(owner, repo, end_cursor)
+        request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+        # trims the result of the api call to remove unnecessary nesting
+        pprint(request.json())
+        trimmed_request = request.json()["data"]["repository"]["refs"]
+
+        # determines if all commits have been fetched
+        has_next_page = trimmed_request["pageInfo"]["hasNextPage"]
+        if has_next_page:
+            end_cursor = trimmed_request["pageInfo"]["endCursor"]
+
+        # if api call was successful, adds the commits to the commit list
+        if request.status_code == 200:
+            for node in trimmed_request["nodes"]:
+                branch_names.append(node["name"])
+        else:
+            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+
+    return branch_names
+
+
+# first api call - gets a list of commits and information about them
+def run_commit_query(owner, repo, branch, headers, user_list):
     # stores the list of commits
     commit_list = []
     # for pagination
@@ -55,17 +82,11 @@ def run_commit_query(owner, repo, branch, auth):
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
     # processes list of commits
-    commit_info(commit_list)
+    commit_info(commit_list, user_list)
 
 
 # second api call - text from every file in latest commit
-def run_text_query(owner, repo, branch, auth):
-    # stores the authorisation token and accept
-    headers = {
-        "Authorization": "token " + auth,
-        "Accept": "application/vnd.github+json",
-    }
-
+def run_text_query(owner, repo, branch, headers, latest_commit):
     # gets the query and performs call
     query = get_text_query(owner, repo, branch)
     request = post('https://api.github.com/graphql', json={'query': query}, headers=headers)
@@ -74,19 +95,13 @@ def run_text_query(owner, repo, branch, auth):
 
     # if api call was successful, calls function to process the result into file objects
     if request.status_code == 200:
-        store_files(trimmed_request)
+        store_files(trimmed_request, latest_commit)
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
 
 # final api call - blames each line of code in every file of the latest commit
-def run_blame_query(owner, repo, branch, auth):
-    # stores the authorisation token and accept
-    headers = {
-        "Authorization": "token " + auth,
-        "Accept": "application/vnd.github+json",
-    }
-
+def run_blame_query(owner, repo, branch, headers, user_list, latest_commit):
     # iterates over the files stored in latest_commit - a separate call must be done for each file
     for file in latest_commit:
         # gets query, passing in file path
@@ -97,21 +112,21 @@ def run_blame_query(owner, repo, branch, auth):
 
         # if api call was successful, calls to assign blame to each user
         if request.status_code == 200:
-            assign_blame(trimmed_request)
+            assign_blame(trimmed_request, user_list, latest_commit)
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
 
-def get_Complexity_Values():
-    #   will return repo complexity score and individual complexity score of each file. 
+
+def get_Complexity_Values(latest_commit, Repo_Complexity_Score):
+    #   will return repo complexity score and individual complexity score of each file.
     #   dictionary with individual file complexity scores will be represented like:
     #   Dictionary with key being filename and value being a list with index 0 being complexity value (number)
     #   and index 1 being complexity rank (A,B,C...) or ->
     #   { 'fileName.py' = [ FileComplexityValue, FileComplexityRank ] }
-    
+
     number_of_functions_scanned = 0
     total_complexity_score = 0
     number_of_files_scanned = 0
-    codeComplexityValuesDict = {}
     for file in latest_commit:
         if file.extension == ".py":
             complexityResults = run_Complexity_Checker(file)
@@ -120,17 +135,18 @@ def get_Complexity_Values():
             number_of_files_scanned += 1
             codeComplexityValuesDict[file.name] = [complexityResults[2], complexityResults[3]]
             print(codeComplexityValuesDict)
-    
-    global Repo_Complexity_Score
-    Repo_Complexity_Score = total_complexity_score/number_of_functions_scanned 
-    Repo_Complexity_Rank = cc_rank(Repo_Complexity_Score) 
-    #print(f"Repo Complexity Score = {Repo_Complexity_Score}")
-    #print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
-    
-    
+
+    if number_of_functions_scanned != 0:
+        Repo_Complexity_Score = total_complexity_score / number_of_functions_scanned
+    else:
+        Repo_Complexity_Score = total_complexity_score
+    Repo_Complexity_Rank = cc_rank(Repo_Complexity_Score)
+    # print(f"Repo Complexity Score = {Repo_Complexity_Score}")
+    # print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
+
+
 # assigns the info about the commits to each user
-def commit_info(commit_list):
-    global user_list
+def commit_info(commit_list, user_list):
 
     # gets info from commit_list (json format) and stores the results in a commit object
     for commit_json in commit_list:
@@ -146,9 +162,6 @@ def commit_info(commit_list):
         deletions = commit_json["node"]["deletions"]
         commit = Commit(name, sha, message, day, time, additions, deletions)
 
-        # add each commit to the database
-        db.session.add(commit)
-
         # adds the commit to a user if it exists, or makes a new user with the commit if it doesn't
         if name in user_list:
             user_list[name].add(commit)
@@ -159,22 +172,19 @@ def commit_info(commit_list):
 
 
 # recursively traverses the tree of files storing each file in a fileContents object
-def store_files(tree, path=""):
-    global latest_commit
+def store_files(tree, latest_commit, path="", ):
 
     for entry in tree:
-        if "text" not in entry["object"]:
-            # if nested, goes one level down
-            store_files(entry["object"]["entries"], path + entry["name"] + '/')
-        else:
+        if "text" in entry["object"]:
             # if contains "text" field, makes new file object and adds it to the latest_commit list
             latest_commit.append(FileContents(entry["name"], path, entry["object"]["text"]))
+        elif "entries" in entry["object"]:
+            # if nested, goes one level down
+            store_files(entry["object"]["entries"], latest_commit, path + entry["name"] + '/')
 
 
 # assigns lines of code written to each user
-def assign_blame(blame_list):
-    global latest_commit
-    global user_list
+def assign_blame(blame_list, user_list, latest_commit):
 
     # iterates through blame_list (json format) and gets the lines written by each user
     for blame in blame_list:
@@ -187,14 +197,15 @@ def assign_blame(blame_list):
         user_list[name].calculate_code_ownership(user_list[GROUP_STATS].lines_written)
 
 
-# prints the results to the console
-def print_stats():
+# prints the results to the console for testing purposes
+def print_stats(user_list, latest_commit, branch_names):
+    print(f"\nBranches: {branch_names}\n")
     print("\nFiles:\n")
     for file in latest_commit:
         print(f"Name: {file.name}\n"
-              f"Path: {file.path}\n"
-              f"Contents:\n{file.contents}\n")
-        
+              f"Path: {file.path}\n")
+        # f"Contents:\n{file.contents}\n")
+
     print("\nUsers:\n")
     for name in user_list:
         print(f"User: {name}\n"
@@ -208,7 +219,8 @@ def print_stats():
               f"Percentage ownership: {user_list[name].code_ownership}%")
 
         if name == GROUP_STATS:
-            print(f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
+            print(
+                f"Largest commit: {user_list[name].most_changes[0]} changes by {user_list[name].most_changes[1].author}\n")
         else:
             print(f"Largest commit: {user_list[name].most_changes[0]} changes\n")
         # user_list[name].print_commits()
@@ -216,25 +228,46 @@ def print_stats():
 
 # gathers all the api calls into a single function
 def get_stats(owner, repo, branch, auth):
-    run_commit_query(owner, repo, branch, auth)
-    run_text_query(owner, repo, branch, auth)
-    run_blame_query(owner, repo, branch, auth)
-    # resolve the stats for each user and add it to the database
+    user_list = {GROUP_STATS: UserStats()}
+    latest_commit = []
+    Repo_Complexity_Score = 0
+
+    headers = {
+        "Authorization": "token " + auth,
+        "Accept": "application/vnd.github+json",
+    }
+
+    run_commit_query(owner, repo, branch, headers, user_list)
+    run_text_query(owner, repo, branch, headers, latest_commit)
+    run_blame_query(owner, repo, branch, headers, user_list, latest_commit)
+    # resolve the stats for each user
     for name in user_list:
         user_list[name].resolve_stats()
-        db.session.add(user_list[name])
-    # commit the info to the database
-    db.session.commit()
+
+    return user_list, latest_commit, Repo_Complexity_Score
 
 
 # main function for testing code
 if __name__ == '__main__':
+    owner = "Moeto88"
+    repo = "SWENG_Group43"
+    branch = "master"
+    auth = "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"
+
+    b_n = run_branch_query(owner, repo, auth)
+
+    print(f"Gathering data from {repo}, branch {branch}...")
+    u_list, l_c, r_c = get_stats(owner, repo, branch, auth)
+    # get_Complexity_Values(l_c, r_c)
+    print_stats(u_list, l_c, b_n)
+
     owner = "Su1tanA1bo"
     repo = "SWENG-Main-Project"
     branch = "api-calls"
-    auth = "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"
 
-    print(f"Gathering data from {repo}, branch {branch}...")
-    get_stats(owner, repo, branch, auth)
-    get_Complexity_Values()
-    print_stats()
+    b_n = run_branch_query(owner, repo, auth)
+
+    print(f"Gathering data from {repo}, branch {branch} again...")
+    u_list, l_c, r_c = get_stats(owner, repo, branch, auth)
+    # get_Complexity_Values()
+    print_stats(u_list, l_c, b_n)

@@ -141,3 +141,31 @@ def get_blame_query(repo, owner, branch, path):
     """ % (owner, repo, branch, path)
 
     return query
+
+
+# initial query to get all the commits in a branch
+def get_branch_query(repo, owner, end_cursor=None):
+
+    # for pagination
+    if end_cursor is not None:
+        after = f', after: "{end_cursor}"'
+    else:
+        after = ""
+
+    query = """
+    {
+        repository(name: "%s", owner: "%s") {
+            refs(first: 100, refPrefix: "refs/heads/"%s) {
+                nodes {
+                    name
+                }
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+            }
+        }
+    }
+    """ % (owner, repo, after)
+
+    return query

@@ -19,27 +19,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
 
-#Followers relational table. Shows an example of a many to many relationship in SQL
-followers = db.Table('followers',
-    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-)
-
 #Class for database User, containing methods for setting and checking info
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    #defines followers and following as a many to many relationship within user
-    followed = db.relationship(
-        'User', secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -51,24 +38,6 @@ class User(UserMixin, db.Model):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
-
-    #Methods for allowing users to change their following relationships with other users
-    def follow(self, user):
-        if not self.is_following(user):
-            self.followed.append(user)
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
-    def is_following(self, user):
-        return self.followed.filter(
-            followers.c.followed_id == user.id).count() > 0
-    #Complicated query that allows a user to see all their followed posts
-    def followed_posts(self):
-        followed = Post.query.join(
-            followers, (followers.c.followed_id == Post.user_id)).filter(
-                followers.c.follower_id == self.id)
-        own = Post.query.filter_by(user_id=self.id)
-        return followed.union(own).order_by(Post.timestamp.desc())
 
     #Methods for handling password resets, and generating/verifying secure tokens
     def get_reset_password_token(self, expires_in=600):
@@ -83,16 +52,6 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
-
-#Class for posts in database.
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    def __repr__(self):
-        return '<Post {}>'.format(self.body)
 
 #Method for loading a user by their ID
 @login.user_loader
@@ -112,10 +71,9 @@ class Repository(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reponame = db.Column(db.String(64), index=True, unique=True)
 
-    ##TODO: add storage for all the data that a repository holds here
     
-    code_complexity_value = db.Column(db.Float, unique=True, nullable=False)
-    code_complexity_rank = db.Column(db.String(64), unique=True, nullable=False)
+    code_complexity_value = db.Column(db.Float)
+    code_complexity_rank = db.Column(db.String(64))
     
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -177,6 +135,7 @@ class UserStats(db.Model):
         ##init all the values from UserStats original here
         self.days_committed = -1
         self.avg_freq = -1
+        
         self.most_commits = -1
         self.least_commits = -1
 
@@ -242,26 +201,40 @@ class UserStats(db.Model):
 
             # following ifs compare current commit with current biggest/smallest
             tempMostChanges = Commit.query.filter_by(sha=most_changes).first()
-            if commit.changes > tempMostChanges.changes:
+            if tempMostChanges is None:
+                self.most_changes = commit.sha
+            elif commit.changes > tempMostChanges.changes:
                 self.most_changes = commit.sha
 
             tempLeastChanges = Commit.query.filter_by(sha=least_changes).first()
-            if commit.changes < tempLeastChanges.changes:
+            if tempLeastChanges is None:
+                self.least_changes = commit.sha
+            elif commit.changes < tempLeastChanges.changes:
                 self.least_changes = commit.sha
 
             tempMostAdditions = Commit.query.filter_by(sha=most_additions).first()
-            if commit.additions > tempMostAdditions.additions:
+            if tempMostAdditions is None:
                 self.most_additions = commit.sha
+            elif commit.additions > tempMostAdditions.additions:
+                self.most_additions = commit.sha
+
             tempLeastAdditions = Commit.query.filter_by(sha=least_additions).first()
-            if commit.additions < tempLeastAdditions.additions:
+            if tempLeastAdditions is None:
+                self.least_additions = commit.sha
+            elif commit.additions < tempLeastAdditions.additions:
                 self.least_additions = commit.sha
 
             tempMostDeletions = Commit.query.filter_by(sha=most_deletions).first()
-            if commit.deletions > tempMostDeletions.deletions:
+            if tempMostDeletions is None:
                 self.most_deletions = commit.sha
+            elif commit.deletions > tempMostDeletions.deletions:
+                self.most_deletions = commit.sha
+
             tempLeastDeletions = Commit.query.filter_by(sha=least_deletions).first()
-            if commit.deletions < tempLeastDeletions.deletions:
-                least_deletions = commit.sha
+            if tempLeastDeletions is None:
+                self.least_deletions = commit.sha
+            elif commit.deletions < tempLeastDeletions.deletions:
+                self.least_deletions = commit.sha
 
             # counts commits in each day
             if commit.date in commits_per_day:
@@ -276,10 +249,10 @@ class UserStats(db.Model):
         for day in commits_per_day:
             if commits_per_day[day] > most_commits:
                 most_commits = commits_per_day[day]
-                self.most_commits = (day, most_commits)
+                self.most_commits = most_commits
             if commits_per_day[day] < least_commits:
                 least_commits = commits_per_day[day]
-                self.least_commits = (day, least_commits)
+                self.least_commits = least_commits
 
         # gets averages
         self.avg_no_changes = round(total_changes / len(self.commits))
