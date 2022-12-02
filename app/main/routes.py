@@ -42,6 +42,9 @@ list_Percentage_Ownership = []
 list_Number_Of_Most_Changes = []
 list_Number_Of_Least_Changes = []
 
+#CC List Objects
+list_of_file_names =[]
+
 
 # function for updating time user was last seen at. Currently in UTC, will update later
 @bp.before_app_request
@@ -82,6 +85,7 @@ def index():
         global list_Percentage_Ownership
         global list_Number_Of_Most_Changes
         global list_Number_Of_Least_Changes
+        global list_of_file_names
         list_user = []
         # FOC List objects
         list_total_commits = []
