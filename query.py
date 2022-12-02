@@ -13,7 +13,9 @@ from radon.complexity import cc_rank
 from requests import post
 
 GROUP_STATS = "All Users"
-
+global codeComplexityValuesDict
+global total_complexity_score
+global number_of_files_scanned
 
 def run_branch_query(owner, repo, auth):
     branch_names = []
