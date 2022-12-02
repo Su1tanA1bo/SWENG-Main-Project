@@ -75,3 +75,4 @@ Traceback (most recent call last):
 jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'endblock'. You probably made a nesting mistake. Jinja is expecting this tag, but currently looking for 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
 2022-11-30 14:53:32,585 INFO: Main Project 3 startup [in D:\Uni Programs\Software Engineering\Main Project\SWENG-Main-Project\app\__init__.py:87]
 2022-11-30 21:36:11,183 INFO: Main Project 3 startup [in /Users/wwd/Documents/GitHub/SWENG-Main-Project/app/__init__.py:87]
+2022-12-02 17:27:24,607 INFO: Main Project 3 startup [in C:\Users\Sulta\venv\SWENG-Main-Project\app\__init__.py:87]
