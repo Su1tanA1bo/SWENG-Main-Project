@@ -13,9 +13,6 @@ from radon.complexity import cc_rank
 from requests import post
 
 GROUP_STATS = "All Users"
-global codeComplexityValuesDict
-global total_complexity_score
-global number_of_files_scanned
 
 def run_branch_query(owner, repo, auth):
     branch_names = []
@@ -138,7 +135,10 @@ def get_Complexity_Values(latest_commit, Repo_Complexity_Score):
             codeComplexityValuesDict[file.name] = [complexityResults[2], complexityResults[3]]
             print(codeComplexityValuesDict)
 
-    Repo_Complexity_Score = total_complexity_score / number_of_functions_scanned
+    if number_of_functions_scanned != 0:
+        Repo_Complexity_Score = total_complexity_score / number_of_functions_scanned
+    else:
+        Repo_Complexity_Score = total_complexity_score
     Repo_Complexity_Rank = cc_rank(Repo_Complexity_Score)
     # print(f"Repo Complexity Score = {Repo_Complexity_Score}")
     # print(f"Repo Complexity Rank = {Repo_Complexity_Rank}")
@@ -230,6 +230,7 @@ def get_stats(owner, repo, branch, auth):
     user_list = {GROUP_STATS: UserStats()}
     latest_commit = []
     Repo_Complexity_Score = 0
+    codeComplexityValuesDict = {}
 
     headers = {
         "Authorization": "token " + auth,
@@ -239,11 +240,12 @@ def get_stats(owner, repo, branch, auth):
     run_commit_query(owner, repo, branch, headers, user_list)
     run_text_query(owner, repo, branch, headers, latest_commit)
     run_blame_query(owner, repo, branch, headers, user_list, latest_commit)
+    get_Complexity_Values(latest_commit, Repo_Complexity_Score)
     # resolve the stats for each user
     for name in user_list:
         user_list[name].resolve_stats()
 
-    return user_list, latest_commit, Repo_Complexity_Score
+    return user_list, latest_commit, Repo_Complexity_Score, codeComplexityValuesDict
 
 
 # main function for testing code

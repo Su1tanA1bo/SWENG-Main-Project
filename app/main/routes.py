@@ -74,7 +74,8 @@ def index():
         print("hello")
 
         branch_names = run_branch_query(owner, reponame, "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")
-        user_list, latest_commit, Repo_Complexity_Score = get_stats(owner, reponame, branchname, auth)
+        user_list, latest_commit, Repo_Complexity_Score, codeComplexityValuesDict = get_stats(owner, reponame, branchname, auth)
+        print(codeComplexityValuesDict)
 
         print("hello")
         # Add commit values to above lists
@@ -131,13 +132,14 @@ def index():
             list_Number_Of_Most_Changes += [user_list[name].most_changes[0]]
             list_Number_Of_Least_Changes += [user_list[name].least_changes[0]]
 
-        total_repo_CC_core = [total_complexity_score]
-        number_Of_Functions_Scanned = [number_of_files_scanned]
+        total_repo_CC_core = [Repo_Complexity_Score]
+        # number_Of_Functions_Scanned = [number_of_files_scanned]
         for file in latest_commit:
-            #CC List Objects
-            list_of_file_names = [file.name]
-            list_of_complexity_values = [codeComplexityValuesDict[file.name][0]]
-            list_of_complexity_ranks = [codeComplexityValuesDict[file.name][0]]
+            if file.extension == ".py":
+                #CC List Objects
+                list_of_file_names += [file.name]
+                list_of_complexity_values += [codeComplexityValuesDict[file.name][0]]
+                list_of_complexity_ranks += [codeComplexityValuesDict[file.name][1]]
 
     return render_template('index.html', title='Home')
 
