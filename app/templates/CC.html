@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block app_content %}
+
+<!doctype html>
+<html lang="en">
+ <head>
+   <meta charset="utf-8">
+ </head>
+ <body>
+  <h3> Code Complexity: </h3>
+   <div>
+     <canvas id="myChart-2" width="900" height="400"></canvas>
+   </div>
+
+   <meta name="listOfFileNames" content="{{listOfFileNames}}">
+   <meta name="totalRepoCCScore" content="{{totalRepoCCScore}}">
+   <meta name="numberOfFunctionsScanned" content="{{numberOfFunctionsScanned}}">
+   <meta name="listOfComplexityValues" content="{{listOfComplexityValues}}">
+   <meta name="listOfComplexityRanks" content="{{listOfComplexityRanks}}">
+
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+  // loading inputed values into variables
+  var listOfFileNames = document.getElementsByName('listOfFileNames')[0].content
+  var totalRepoCCScore = document.getElementsByName('totalRepoCCScore')[0].content
+  var numberOfFunctionsScanned = document.getElementsByName('numberOfFunctionsScanned')[0].content
+  var listOfComplexityValues = document.getElementsByName('listOfComplexityValues')[0].content
+  var listOfComplexityRanks = document.getElementsByName('listOfComplexityRanks')[0].content
+
+  // function to convert the inputed lists into a format that can be graphed
+  function inputStringListToGraphFormat(String) {
+    String = String.replace("[", "");
+    String = String.replace("]", "");
+    var splitString = String.split(",")
+    console.log(splitString)
+    return splitString;
+  }
+
+  // changes lists into a format that can be graphed
+  var graphListOfFileNames = inputStringListToGraphFormat(listOfFileNames);
+  var graphListOfComplexityValues = inputStringListToGraphFormat(listOfComplexityValues);
+  var graphListOfComplexityRanks = inputStringListToGraphFormat(listOfComplexityRanks);
+
+ const ctx = document.getElementById('myChart-2');
+  new Chart(ctx, {
+    data: {
+        datasets: [{
+          type: 'bar',
+          label: 'Complexity score',
+          data: graphListOfComplexityValues,
+        },
+        // {
+        //   type: 'bar',
+        //   label: 'Complexity Grade',
+        //   data: graphListOfComplexityRanks,
+        // },
+      ],
+        labels: graphListOfFileNames
+    },
+    options: {
+      responsive: true
+    }
+  });
+</script>
+
+
+ </body>
+</html> 
+{% endblock %}
